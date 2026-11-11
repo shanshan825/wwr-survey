@@ -1,0 +1,1263 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+</head><body>
+<title>Phase 2 WWR Survey</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: a field instrument. One column, sticky header, a work canvas that takes the screen, tools in a bottom bar within thumb reach. */
+:root {
+  --bg: #f3f5f6;
+  --surface: #ffffff;
+  --ink: #17202a;
+  --muted: #5b6875;
+  --line: #d6dde3;
+  --accent: #0b6e99;          /* glazing blue-teal */
+  --accent-ink: #ffffff;
+  --glass: rgba(0, 156, 222, .38);
+  --glass-line: #0092d4;
+  --cut: rgba(214, 48, 49, .28);
+  --cut-line: #d63031;
+  --work: #2a3138;            /* canvas backdrop */
+  --sideN: #2b6cb0; --sideE: #c98a12; --sideS: #c53030; --sideW: #2f855a;
+  --warn-bg: #fff4d6; --warn-ink: #7a5300;
+  --ok: #2f855a;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r: 10px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #12171c; --surface: #1b2228; --ink: #e6ebef; --muted: #98a5b1; --line: #2e3841;
+  --accent: #39a9dc; --accent-ink: #06141c; --work: #0b0f12;
+  --sideN: #5b9be0; --sideE: #e0a93a; --sideS: #e46a6a; --sideW: #4fb383;
+  --warn-bg: #3a2f12; --warn-ink: #f2d38a; --ok: #4fb383; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #12171c; --surface: #1b2228; --ink: #e6ebef; --muted: #98a5b1; --line: #2e3841;
+  --accent: #39a9dc; --accent-ink: #06141c; --work: #0b0f12;
+  --sideN: #5b9be0; --sideE: #e0a93a; --sideS: #e46a6a; --sideW: #4fb383;
+  --warn-bg: #3a2f12; --warn-ink: #f2d38a; --ok: #4fb383; color-scheme: dark }
+
+html, body { height: 100%; }
+[hidden] { display: none !important; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.45 var(--f-body); }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); max-width: 760px; margin: 0 auto; }
+
+header.top { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line); }
+header.top .wrap { display: flex; align-items: center; gap: 10px; padding-block: 10px; min-height: 52px; }
+header.top h1 { font: 600 19px/1.1 var(--f-display); margin: 0; letter-spacing: .01em; flex: 1; min-width: 0; text-wrap: balance; }
+header.top h1 small { display: block; font: 500 12px/1.3 var(--f-body); color: var(--muted); letter-spacing: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.iconbtn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; min-width: 40px; height: 40px; padding: 0 10px; display: inline-flex; align-items: center; justify-content: center; gap: 6px; font-weight: 500; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 10px 14px; font-weight: 500; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.danger { color: var(--cut-line); }
+.btn:disabled { opacity: .45; cursor: default; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.muted { color: var(--muted); }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+.banner { background: var(--warn-bg); color: var(--warn-ink); font-size: 13px; padding: 8px 12px; border-radius: 8px; }
+.eyebrow { font: 600 11px/1 var(--f-body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+
+/* list view */
+.toolbar { display: grid; gap: 10px; padding-block: 12px; }
+.search { width: 100%; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 10px 12px; min-height: 44px; }
+.chips { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 2px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; white-space: nowrap; font-size: 13px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.progress { display: flex; align-items: center; gap: 10px; font-size: 13px; }
+.bar { flex: 1; height: 6px; background: var(--line); border-radius: 3px; overflow: hidden; }
+.bar > i { display: block; height: 100%; background: var(--accent); width: 0; }
+ul.blds { list-style: none; margin: 0; padding: 0 0 40px; display: grid; gap: 8px; }
+.bld { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 10px 12px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 10px; align-items: center; }
+.bld .nm { font-weight: 600; min-width: 0; }
+.bld .meta { font-size: 12px; color: var(--muted); grid-column: 1; }
+.sides { grid-row: 1 / span 2; grid-column: 2; display: grid; grid-template-columns: repeat(4, 46px); gap: 4px; }
+.sidechip { height: 40px; border-radius: 7px; border: 2px solid var(--c); background: transparent; display: grid; place-items: center; line-height: 1; padding: 0; }
+.sidechip b { font: 600 12px/1 var(--f-display); color: var(--c); }
+.sidechip span { font: 500 11px/1 var(--f-mono); color: var(--muted); }
+.sidechip.done { background: var(--c); }
+.sidechip.done b, .sidechip.done span { color: #fff; }
+.sidechip.na { opacity: .3; }
+.sidechip.flag { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--warn-ink); }
+.claim { display: inline-block; margin-left: 6px; font-size: 11px; padding: 1px 6px; border-radius: 4px; border: 1px solid var(--line); color: var(--muted); }
+.claim.me { border-color: var(--accent); color: var(--accent); }
+.claimrow { grid-template-columns: minmax(0, 1fr) auto; align-items: center; }
+.guide h3 { font: 600 15px/1.2 var(--f-display); margin: 6px 0 2px; }
+.guide p, .guide li { font-size: 14px; margin: 0 0 6px; }
+.guide ul { padding-left: 18px; margin: 0; }
+.tag { display: inline-block; font-size: 11px; padding: 1px 6px; border-radius: 4px; background: var(--warn-bg); color: var(--warn-ink); }
+
+/* side view */
+.sidehead { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; align-items: center; padding-block: 14px; }
+.plan { width: 120px; height: 120px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); }
+.bigside { font: 600 34px/1 var(--f-display); color: var(--c); }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; font-size: 13px; margin-top: 6px; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 12px; display: grid; gap: 10px; }
+.result { display: flex; align-items: baseline; gap: 10px; }
+.result .val { font: 600 40px/1 var(--f-display); font-variant-numeric: tabular-nums; }
+ul.meas { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.meas li { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 10px; align-items: center; border-top: 1px solid var(--line); padding-top: 8px; }
+.thumb { width: 64px; height: 48px; object-fit: cover; border-radius: 6px; background: var(--work); display: grid; place-items: center; color: var(--muted); font-size: 11px; }
+.meas .v { font: 600 18px/1 var(--f-mono); }
+.meas small { display: block; color: var(--muted); font-size: 12px; overflow-wrap: anywhere; }
+.stack { display: grid; gap: 12px; padding-block: 0 40px; }
+.hint { font-size: 13px; color: var(--muted); }
+
+/* work views */
+.work { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; height: calc(100% - 53px); }
+.work .step { padding-block: 8px; font-size: 13px; color: var(--muted); }
+.stage { position: relative; background: var(--work); min-height: 240px; overflow: hidden; }
+.stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; display: block; }
+.readout { position: absolute; top: 10px; right: calc(10px + env(safe-area-inset-right, 0px)); background: rgba(10, 14, 18, .78); color: #fff; border-radius: 8px; padding: 6px 10px; font: 600 22px/1 var(--f-mono); pointer-events: none; }
+.readout small { display: block; font: 500 10px/1.2 var(--f-body); letter-spacing: .06em; text-transform: uppercase; opacity: .75; }
+.zoomctl { position: absolute; left: calc(10px + env(safe-area-inset-left, 0px)); bottom: 10px; display: flex; gap: 6px; }
+.zoomctl button { width: 40px; height: 40px; border-radius: 8px; border: 0; background: rgba(10, 14, 18, .72); color: #fff; font-size: 18px; }
+.dock { background: var(--surface); border-top: 1px solid var(--line); padding-bottom: env(safe-area-inset-bottom, 0px); }
+.dock .wrap { display: grid; gap: 8px; padding-block: 8px; }
+.tools { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.tool { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; min-height: 52px; display: grid; place-items: center; gap: 2px; font-size: 11px; padding: 4px 2px; }
+.tool svg { width: 22px; height: 22px; }
+.tool[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.tool.sub[aria-pressed="true"] { background: var(--cut-line); border-color: var(--cut-line); color: #fff; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.actions .btn { min-width: 0; }
+.actions .btn { flex: 1; }
+
+/* form */
+label.f { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+label.f input, label.f select, label.f textarea { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 8px; padding: 9px 10px; min-height: 42px; }
+.seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+.seg button { border: 0; background: var(--surface); padding: 9px 4px; font-size: 13px; min-height: 42px; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.preview { width: 100%; border-radius: var(--r); background: var(--work); }
+.modal { position: fixed; inset: 0; z-index: 20; background: rgba(0,0,0,.45); display: grid; place-items: end center; }
+.modal .sheet { background: var(--surface); width: min(760px, 100%); border-radius: 14px 14px 0 0; padding: 16px max(16px, env(safe-area-inset-right, 0px)) calc(16px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: grid; gap: 10px; max-height: 85%; overflow: auto; }
+.modal textarea { width: 100%; min-height: 160px; font: 12px/1.4 var(--f-mono); }
+.toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 8px; z-index: 30; font-size: 14px; max-width: calc(100% - 32px); }
+@media (prefers-reduced-motion: no-preference) { .toast { transition: opacity .2s; } }
+@media (max-width: 420px) { .sides { grid-template-columns: repeat(4, 40px); } .sidechip { height: 38px; } .sidehead { grid-template-columns: 96px minmax(0,1fr); } .plan { width: 96px; height: 96px; } }
+</style>
+
+<!-- ============ LIST ============ -->
+<section id="vList">
+  <header class="top"><div class="wrap">
+    <h1>Phase 2 WWR Survey<small id="syncState">Connecting…</small></h1>
+    <button class="iconbtn" id="btnGuide" type="button">Guide</button>
+    <button class="iconbtn" id="btnExport" type="button" aria-label="Export CSV">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 21h14"/></svg>Export</button>
+  </div></header>
+  <div class="wrap toolbar">
+    <div id="storeBanner" class="banner" hidden></div>
+    <input id="q" class="search" type="search" placeholder="Search building name or ID" autocomplete="off">
+    <div class="chips" id="zoneChips" role="group" aria-label="Zone"></div>
+    <div class="row" style="justify-content:space-between">
+      <div class="chips" role="group" aria-label="Show" id="filterChips">
+        <button class="chip" type="button" data-f="all" aria-pressed="true">All</button>
+        <button class="chip" type="button" data-f="mine" aria-pressed="false">Mine</button>
+        <button class="chip" type="button" data-f="free" aria-pressed="false">Unclaimed</button>
+        <button class="chip" type="button" data-f="todo" aria-pressed="false">Unfinished</button>
+        <button class="chip" type="button" data-f="check" aria-pressed="false">To check</button>
+      </div>
+      <div class="progress" style="flex:1;min-width:160px"><div class="bar"><i id="progBar"></i></div><span class="mono" id="progTxt">0 / 0</span></div>
+    </div>
+  </div>
+  <div class="wrap"><ul class="blds" id="list"></ul></div>
+</section>
+
+<!-- ============ SIDE ============ -->
+<section id="vSide" hidden>
+  <header class="top"><div class="wrap">
+    <button class="iconbtn" type="button" data-back aria-label="Back to list">←</button>
+    <h1 id="sTitle">Building<small id="sSub"></small></h1>
+  </div></header>
+  <div class="wrap">
+    <div class="sidehead">
+      <svg class="plan" id="sPlan" viewBox="-60 -60 120 120" aria-label="Plan with this side highlighted"></svg>
+      <div>
+        <div class="bigside" id="sSide">N facade</div>
+        <dl class="facts">
+          <dt>Facade length</dt><dd class="mono" id="sLen"></dd>
+          <dt>GIS WWR</dt><dd class="mono" id="sGis"></dd>
+          <dt>Where to stand</dt><dd id="sStand"></dd>
+        </dl>
+        <div id="sDiag" class="tag" hidden>Diagonal building: follow the plan colours</div>
+      </div>
+    </div>
+    <div class="stack">
+      <div class="panel claimrow">
+        <span id="sClaim" class="hint">Nobody has claimed this building yet.</span>
+        <button class="btn" id="btnClaim" type="button">Claim building</button>
+      </div>
+      <div class="panel">
+        <div class="result"><span class="val mono" id="sVal">–</span><span class="muted" id="sValNote">No measurements yet</span></div>
+        <div class="banner" id="sSpread" hidden></div>
+        <ul class="meas" id="sMeas"></ul>
+      </div>
+      <div class="panel">
+        <span class="eyebrow">Add a measurement</span>
+        <div class="row">
+          <label class="btn primary" for="fileCam">Take photo</label>
+          <input id="fileCam" type="file" accept="image/*" capture="environment" hidden>
+          <label class="btn" for="fileGal">Choose image</label>
+          <input id="fileGal" type="file" accept="image/*" hidden>
+          <button class="btn" id="btnEye" type="button">Enter by eye</button>
+        </div>
+        <p class="hint" style="margin:0">Photograph one typical bay square-on, or a whole facade. Screenshots from Street View or Google Earth work too. Several measurements for one side are averaged.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ STRAIGHTEN ============ -->
+<section id="vRect" hidden style="height:100%">
+  <header class="top"><div class="wrap">
+    <button class="iconbtn" type="button" data-cancel aria-label="Cancel">✕</button>
+    <h1>Straighten<small class="ctx"></small></h1>
+  </div></header>
+  <div class="work">
+    <div class="wrap step">Drag the four corners onto the edges of the wall area or bay. Pinch or use + / − to zoom.</div>
+    <div class="stage"><canvas id="cRect"></canvas>
+      <div class="zoomctl"><button type="button" data-zoom="1.4" aria-label="Zoom in">+</button><button type="button" data-zoom="0.714" aria-label="Zoom out">−</button><button type="button" data-zoom="0" aria-label="Fit">⤢</button></div></div>
+    <div class="dock"><div class="wrap actions">
+      <button class="btn" id="rectSkip" type="button">Already square-on</button>
+      <button class="btn primary" id="rectNext" type="button">Straighten</button>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ CROP ============ -->
+<section id="vCrop" hidden style="height:100%">
+  <header class="top"><div class="wrap">
+    <button class="iconbtn" type="button" data-cancel aria-label="Cancel">✕</button>
+    <h1>Crop<small class="ctx"></small></h1>
+  </div></header>
+  <div class="work">
+    <div class="wrap step">Drag the corners to trim the wall area. Everything inside the box counts as wall.</div>
+    <div class="stage"><canvas id="cCrop"></canvas>
+      <div class="zoomctl"><button type="button" data-zoom="1.4" aria-label="Zoom in">+</button><button type="button" data-zoom="0.714" aria-label="Zoom out">−</button><button type="button" data-zoom="0" aria-label="Fit">⤢</button></div></div>
+    <div class="dock"><div class="wrap actions">
+      <button class="btn" id="cropBack" type="button">Back</button>
+      <button class="btn primary" id="cropNext" type="button">Mark glazing</button>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ MARK ============ -->
+<section id="vMark" hidden style="height:100%">
+  <header class="top"><div class="wrap">
+    <button class="iconbtn" type="button" data-cancel aria-label="Cancel">✕</button>
+    <h1>Mark glazing<small class="ctx"></small></h1>
+  </div></header>
+  <div class="work">
+    <div class="wrap step" id="markHint">Drag a box over each window. Use Remove to cut frames or spandrels back out.</div>
+    <div class="stage"><canvas id="cMark"></canvas>
+      <div class="readout" id="readout"><small>WWR</small>0.0%</div>
+      <div class="zoomctl"><button type="button" data-zoom="1.4" aria-label="Zoom in">+</button><button type="button" data-zoom="0.714" aria-label="Zoom out">−</button><button type="button" data-zoom="0" aria-label="Fit">⤢</button></div></div>
+    <div class="dock"><div class="wrap">
+      <div class="tools" role="group" aria-label="Tool">
+        <button class="tool" type="button" data-tool="addRect" aria-pressed="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="6" width="16" height="12"/></svg>Window</button>
+        <button class="tool" type="button" data-tool="addPoly" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 18 4 8l8-4 8 5-2 9z"/></svg>Shape</button>
+        <button class="tool sub" type="button" data-tool="subRect" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2"><rect x="4" y="6" width="16" height="12"/></svg>Remove</button>
+        <button class="tool sub" type="button" data-tool="subPoly" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="3 2"><path d="M5 18 4 8l8-4 8 5-2 9z"/></svg>Remove shape</button>
+        <button class="tool" type="button" data-tool="select" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 3 14 8-6 2-3 6z"/></svg>Select</button>
+      </div>
+      <div class="actions">
+        <button class="btn" id="mUndo" type="button">Undo</button>
+        <button class="btn" id="mDup" type="button" hidden>Duplicate</button>
+        <button class="btn danger" id="mDel" type="button" hidden>Delete</button>
+        <button class="btn" id="mClose" type="button" hidden>Close shape</button>
+        <button class="btn primary" id="mNext" type="button">Review</button>
+      </div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ SAVE ============ -->
+<section id="vSave" hidden>
+  <header class="top"><div class="wrap">
+    <button class="iconbtn" type="button" id="saveBack" aria-label="Back">←</button>
+    <h1>Save measurement<small class="ctx"></small></h1>
+  </div></header>
+  <div class="wrap stack" style="padding-top:14px">
+    <img class="preview" id="svImg" alt="Straightened facade with glazing marked" hidden>
+    <div class="result"><span class="val mono" id="svVal">–</span><span class="muted" id="svName"></span></div>
+    <label class="f" id="svEyeRow" hidden>WWR estimate (%)<input id="svEye" type="number" inputmode="decimal" min="0" max="100" step="1"></label>
+    <div><span class="eyebrow">Source</span>
+      <div class="seg" id="svSource" style="grid-template-columns:repeat(4,minmax(0,1fr));margin-top:6px">
+        <button type="button" data-v="site photo">Site photo</button><button type="button" data-v="street view">Street View</button><button type="button" data-v="google earth">Google Earth</button><button type="button" data-v="drawing">Drawing</button>
+      </div></div>
+    <div><span class="eyebrow">Confidence</span>
+      <div class="seg" id="svConf" style="margin-top:6px">
+        <button type="button" data-v="high">High</button><button type="button" data-v="medium">Medium</button><button type="button" data-v="low">Low</button>
+      </div></div>
+    <label class="f">Notes<textarea id="svNote" rows="2" placeholder="e.g. spandrel glass counted as wall; louvres on upper floors"></textarea></label>
+    <div class="actions">
+      <button class="btn" id="svDownload" type="button" hidden>Save image to device</button>
+      <button class="btn primary" id="svSave" type="button">Save</button>
+    </div>
+  </div>
+</section>
+
+<div class="modal" id="modal" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="mdTitle">
+  <strong id="mdTitle"></strong><div id="mdBody"></div>
+  <div class="actions" id="mdActions"></div>
+</div></div>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+const BUILDINGS = [{"i":"B1086","n":"Centre for English Language Communication (CELC)","z":"1","f":3,"w":5.0,"L":[39,63,39,62],"d":0,"e":[["W",-2.7,34.7,-6.5,23.6],["S",-6.5,23.6,-2.1,22.1],["W",-2.1,22.1,-13.3,-10.0],["N",-13.3,-10.0,-16.2,-9.0],["W",-16.2,-9.0,-17.3,-12.1],["N",-17.3,-12.1,-21.4,-10.7],["W",-21.4,-10.7,-25.9,-23.5],["S",-25.9,-23.5,6.7,-34.7],["E",6.7,-34.7,25.9,20.4],["N",25.9,20.4,12.6,24.9],["E",12.6,24.9,14.0,28.9],["N",14.0,28.9,-2.7,34.7]]},{"i":"B1063","n":"E1","z":"1","f":8,"w":61.7,"L":[37,89,37,89],"d":0,"e":[["N",-2.4,42.0,-6.3,40.1],["E",-6.3,40.1,-8.9,45.6],["N",-8.9,45.6,-19.3,40.8],["W",-19.3,40.8,-16.9,35.8],["N",-16.9,35.8,-20.5,34.1],["W",-20.5,34.1,-18.4,29.6],["N",-18.4,29.6,-31.4,23.5],["W",-31.4,23.5,-5.9,-30.0],["S",-5.9,-30.0,-0.1,-27.3],["W",-0.1,-27.3,1.2,-30.0],["N",1.2,-30.0,-1.6,-31.3],["W",-1.6,-31.3,5.2,-45.6],["S",5.2,-45.6,15.2,-40.9],["E",15.2,-40.9,13.5,-37.3],["S",13.5,-37.3,31.4,-28.9],["E",31.4,-28.9,-2.4,42.0]]},{"i":"B1064","n":"E1A","z":"1","f":7,"w":34.1,"L":[33,58,33,58],"d":0,"e":[["E",25.9,-21.6,1.0,30.7],["N",1.0,30.7,-15.7,22.9],["W",-15.7,22.9,-14.7,20.9],["N",-14.7,20.9,-21.9,17.5],["W",-21.9,17.5,-19.6,12.7],["N",-19.6,12.7,-25.9,9.8],["W",-25.9,9.8,-8.5,-26.7],["S",-8.5,-26.7,-2.0,-23.6],["W",-2.0,-23.6,1.4,-30.7],["S",1.4,-30.7,8.1,-27.6],["W",8.1,-27.6,9.1,-29.5],["S",9.1,-29.5,25.9,-21.6]]},{"i":"B1058","n":"E2","z":"1","f":5,"w":61.7,"L":[20,92,20,92],"d":0,"e":[["W",-28.6,37.4,11.0,-45.7],["S",11.0,-45.7,28.6,-37.2],["E",28.6,-37.2,-10.9,45.7],["N",-10.9,45.7,-28.6,37.4]]},{"i":"B1296","n":"E2A","z":"1","f":4,"w":30.7,"L":[25,30,21,27],"d":0,"e":[["W",-15.8,7.5,-4.5,-17.2],["S",-4.5,-17.2,15.8,-11.8],["E",15.8,-11.8,6.9,17.2],["N",6.9,17.2,-15.8,7.5]]},{"i":"B1053","n":"E3","z":"1","f":6,"w":61.7,"L":[27,117,28,117],"d":0,"e":[["W",-36.8,47.2,-1.5,-27.2],["S",-1.5,-27.2,5.5,-23.9],["W",5.5,-23.9,20.0,-55.4],["S",20.0,-55.4,28.7,-51.3],["E",28.7,-51.3,27.5,-48.9],["S",27.5,-48.9,36.8,-44.5],["E",36.8,-44.5,4.2,23.6],["N",4.2,23.6,-2.7,20.3],["E",-2.7,20.3,-19.5,55.4],["N",-19.5,55.4,-36.8,47.2]]},{"i":"B1055","n":"E3A","z":"1","f":7,"w":19.5,"L":[80,47,75,39],"d":0,"e":[["W",-11.2,-12.1,-16.0,-14.7],["S",-16.0,-14.7,-10.3,-25.8],["E",-10.3,-25.8,0.1,-20.5],["N",0.1,-20.5,-2.1,-16.2],["E",-2.1,-16.2,-0.1,-10.4],["S",-0.1,-10.4,22.7,-18.2],["E",22.7,-18.2,26.0,-8.5],["W",26.0,-8.5,27.8,-12.6],["S",27.8,-12.6,36.4,-8.9],["E",36.4,-8.9,32.3,0.3],["N",32.3,0.3,28.5,-1.4],["E",28.5,-1.4,31.4,7.3],["N",31.4,7.3,-23.0,25.8],["W",-23.0,25.8,-24.1,22.9],["N",-24.1,22.9,-36.4,17.0],["W",-36.4,17.0,-32.7,9.3],["S",-32.7,9.3,-27.9,11.5],["W",-27.9,11.5,-31.5,1.3],["S",-31.5,1.3,-9.1,-6.3],["W",-9.1,-6.3,-11.2,-12.1]]},{"i":"B1052","n":"E4","z":"1","f":8,"w":31.9,"L":[185,24,202,21],"d":0,"e":[["E",67.3,-61.7,73.9,-43.2],["N",73.9,-43.2,58.1,-38.0],["N",58.1,-38.0,31.1,-28.1],["E",31.1,-28.1,32.4,-24.6],["N",32.4,-24.6,-31.7,-2.1],["N",-31.7,-2.1,-50.9,38.2],["W",-50.9,38.2,-52.2,37.6],["N",-52.2,37.6,-63.6,61.7],["W",-63.6,61.7,-73.9,56.9],["S",-73.9,56.9,-64.8,37.7],["W",-64.8,37.7,-72.3,34.1],["S",-72.3,34.1,-47.1,-18.9],["S",-47.1,-18.9,24.4,-44.6],["S",24.4,-44.6,28.9,-48.2],["S",28.9,-48.2,67.3,-61.7]]},{"i":"B1050","n":"E4A","z":"1","f":7,"w":5.5,"L":[74,17,55,20],"d":0,"e":[["N",-17.5,20.9,-32.7,15.6],["W",-32.7,15.6,-24.9,-2.3],["S",-24.9,-2.3,27.2,-20.9],["E",27.2,-20.9,32.7,-4.7],["N",32.7,-4.7,-11.9,11.4],["N",-11.9,11.4,-17.5,20.9]]},{"i":"B1005","n":"E5","z":"1","f":4,"w":36.1,"L":[112,22,112,21],"d":0,"e":[["W",-48.4,29.2,-55.6,9.7],["S",-55.6,9.7,49.7,-29.2],["E",49.7,-29.2,55.6,-11.7],["N",55.6,-11.7,-16.8,14.7],["E",-16.8,14.7,-15.5,17.5],["N",-15.5,17.5,-48.4,29.2]]},{"i":"B1048","n":"E6","z":"1","f":7,"w":35.6,"L":[35,72,35,73],"d":0,"e":[["W",-30.7,25.8,-0.7,-40.5],["S",-0.7,-40.5,30.7,-25.7],["E",30.7,-25.7,1.2,40.5],["N",1.2,40.5,-30.7,25.8]]},{"i":"B1347","n":"E7","z":"1","f":8,"w":66.7,"L":[58,53,58,53],"d":0,"e":[["W",-37.6,11.0,-14.2,-36.3],["S",-14.2,-36.3,37.6,-10.9],["E",37.6,-10.9,14.2,36.3],["N",14.2,36.3,-37.6,11.0]]},{"i":"B1068","n":"EA","z":"1","f":7,"w":23.2,"L":[124,120,105,115],"d":0,"e":[["N",-17.0,-47.2,-23.0,-33.8],["E",-23.0,-33.8,-15.3,-11.7],["S",-15.3,-11.7,-2.0,-16.0],["S",-2.0,-16.0,14.6,-50.0],["E",14.6,-50.0,29.9,-42.3],["N",29.9,-42.3,28.0,-38.8],["W",28.0,-38.8,21.8,-41.8],["N",21.8,-41.8,20.0,-38.1],["E",20.0,-38.1,25.1,-35.6],["N",25.1,-35.6,14.6,-16.3],["E",14.6,-16.3,18.2,-9.0],["E",18.2,-9.0,24.8,8.8],["N",24.8,8.8,18.2,11.3],["E",18.2,11.3,19.7,15.3],["S",19.7,15.3,34.1,9.9],["E",34.1,9.9,42.1,32.8],["N",42.1,32.8,19.2,41.4],["N",19.2,41.4,14.5,51.3],["W",14.5,51.3,4.3,46.1],["N",4.3,46.1,-18.1,54.6],["W",-18.1,54.6,-26.5,31.4],["S",-26.5,31.4,-12.0,26.3],["W",-12.0,26.3,-13.3,22.8],["N",-13.3,22.8,-20.8,25.4],["W",-20.8,25.4,-42.1,-35.3],["S",-42.1,-35.3,-36.6,-47.1],["S",-36.6,-47.1,-31.8,-45.1],["W",-31.8,-45.1,-30.3,-48.6],["N",-30.3,-48.6,-34.8,-50.6],["S",-34.8,-50.6,-33.0,-54.6],["E",-33.0,-54.6,-17.0,-47.2]]},{"i":"B1014","n":"EW1","z":"1","f":4,"w":29.3,"L":[42,143,41,143],"d":0,"e":[["W",-43.8,58.8,5.2,-44.6],["N",5.2,-44.6,-1.2,-47.5],["W",-1.2,-47.5,7.9,-66.6],["S",7.9,-66.6,14.0,-63.9],["W",14.0,-63.9,17.4,-70.6],["S",17.4,-70.6,43.8,-58.5],["E",43.8,-58.5,31.2,-31.5],["S",31.2,-31.5,35.6,-29.5],["E",35.6,-29.5,-3.1,53.1],["N",-3.1,53.1,-8.9,50.4],["E",-8.9,50.4,-18.4,70.6],["N",-18.4,70.6,-43.8,58.8]]},{"i":"B1292","n":"EW1A","z":"1","f":1,"w":12.4,"L":[20,29,20,29],"d":0,"e":[["N",10.5,14.4,-9.6,15.0],["W",-9.6,15.0,-10.5,-14.4],["S",-10.5,-14.4,9.6,-15.0],["E",9.6,-15.0,10.5,14.4]]},{"i":"B1049","n":"EW2","z":"1","f":6,"w":39.6,"L":[36,61,36,60],"d":0,"e":[["W",-28.9,19.2,-3.5,-35.1],["S",-3.5,-35.1,28.9,-19.8],["E",28.9,-19.8,2.9,35.1],["N",2.9,35.1,-28.9,19.2]]},{"i":"B1002","n":"Information Technology (NUS IT)","z":"1","f":5,"w":54.4,"L":[68,38,68,39],"d":0,"e":[["W",-27.6,25.7,-37.0,-2.7],["S",-37.0,-2.7,-16.6,-9.9],["W",-16.6,-9.9,-19.2,-18.2],["S",-19.2,-18.2,-8.0,-21.7],["E",-8.0,-21.7,-5.6,-14.6],["S",-5.6,-14.6,27.0,-25.7],["E",27.0,-25.7,37.0,2.9],["N",37.0,2.9,-27.6,25.7]]},{"i":"B1056","n":"LT1","z":"1","f":1,"w":3.1,"L":[13,18,13,18],"d":0,"e":[["W",-10.0,5.3,-2.2,-11.1],["S",-2.2,-11.1,10.0,-5.3],["E",10.0,-5.3,2.2,11.1],["N",2.2,11.1,-10.0,5.3]]},{"i":"B1057","n":"LT2","z":"1","f":1,"w":3.8,"L":[18,25,18,25],"d":0,"e":[["N",3.8,10.4,0.3,8.8],["E",0.3,8.8,-2.3,14.3],["N",-2.3,14.3,-11.6,9.9],["W",-11.6,9.9,-8.8,4.2],["N",-8.8,4.2,-12.0,2.7],["W",-12.0,2.7,-3.9,-14.3],["S",-3.9,-14.3,12.0,-6.7],["E",12.0,-6.7,3.8,10.4]]},{"i":"B1051","n":"LT6","z":"1","f":1,"w":11.2,"L":[19,26,15,28],"d":0,"e":[["E",5.8,-14.4,8.7,-7.5],["S",8.7,-7.5,10.1,-8.0],["E",10.1,-8.0,13.3,1.2],["E",13.3,1.2,9.6,9.8],["N",9.6,9.8,0.3,12.9],["W",0.3,12.9,-0.2,11.4],["N",-0.2,11.4,-9.3,14.4],["W",-9.3,14.4,-13.3,3.5],["W",-13.3,3.5,-6.9,-9.9],["S",-6.9,-9.9,5.8,-14.4]]},{"i":"B1054","n":"LT7","z":"1","f":1,"w":1.1,"L":[19,28,23,30],"d":0,"e":[["S",-16.9,-7.3,4.6,-15.5],["E",4.6,-15.5,8.9,-13.4],["E",8.9,-13.4,16.9,8.7],["N",16.9,8.7,-0.8,15.5],["W",-0.8,15.5,-10.8,10.1],["W",-10.8,10.1,-16.9,-7.3]]},{"i":"B1082","n":"SDE1","z":"1","f":5,"w":45.9,"L":[28,76,28,76],"d":0,"e":[["W",-0.5,40.2,-25.9,-30.9],["S",-25.9,-30.9,0.5,-40.2],["E",0.5,-40.2,25.9,31.0],["N",25.9,31.0,-0.5,40.2]]},{"i":"B1081","n":"SDE2","z":"1","f":4,"w":48.1,"L":[34,67,34,67],"d":0,"e":[["W",-3.1,36.4,-22.8,-19.4],["S",-22.8,-19.4,-14.8,-22.1],["W",-14.8,-22.1,-17.6,-29.9],["S",-17.6,-29.9,1.2,-36.4],["E",1.2,-36.4,3.9,-28.7],["S",3.9,-28.7,9.8,-30.7],["E",9.8,-30.7,21.4,2.3],["N",21.4,2.3,14.7,4.6],["E",14.7,4.6,22.8,27.4],["N",22.8,27.4,-3.1,36.4]]},{"i":"B1083","n":"SDE3","z":"1","f":4,"w":29.3,"L":[37,208,28,190],"d":0,"e":[["E",7.2,-72.3,34.6,3.9],["E",34.6,3.9,-9.4,97.9],["N",-9.4,97.9,-34.6,86.5],["W",-34.6,86.5,5.2,2.3],["W",5.2,2.3,-20.3,-68.8],["S",-20.3,-68.8,-13.9,-71.2],["W",-13.9,-71.2,-14.9,-80.0],["W",-14.9,-80.0,-13.7,-84.3],["W",-13.7,-84.3,-10.5,-87.8],["S",-10.5,-87.8,-4.6,-90.5],["W",-4.6,-90.5,-5.7,-93.0],["S",-5.7,-93.0,7.9,-97.9],["E",7.9,-97.9,15.8,-75.6],["N",15.8,-75.6,7.2,-72.3]]},{"i":"B1295","n":"SDE4","z":"1","f":6,"w":61.4,"L":[76,37,77,38],"d":0,"e":[["W",-30.0,30.0,-42.5,-5.5],["S",-42.5,-5.5,30.9,-30.0],["E",30.9,-30.0,42.5,5.4],["N",42.5,5.4,-30.0,30.0]]},{"i":"B1302","n":"Techno Edge","z":"1","f":3,"w":30.0,"L":[12,70,46,70],"d":0,"e":[["W",-14.5,28.6,-25.9,-4.0],["S",-25.9,-4.0,-24.1,-4.7],["W",-24.1,-4.7,-25.0,-7.6],["S",-25.0,-7.6,-22.5,-8.2],["W",-22.5,-8.2,-25.3,-17.0],["S",-25.3,-17.0,-19.5,-18.8],["E",-19.5,-18.8,-16.3,-10.0],["S",-16.3,-10.0,-13.0,-10.3],["W",-13.0,-10.3,-3.2,-30.9],["S",-3.2,-30.9,25.9,-17.3],["E",25.9,-17.3,8.1,21.0],["N",8.1,21.0,0.3,20.1],["E",0.3,20.1,1.4,24.7],["E",1.4,24.7,-10.4,30.9],["N",-10.4,30.9,-14.5,28.6]]},{"i":"B1047","n":"Temasek Laboratories @ NUS","z":"1","f":11,"w":54.4,"L":[37,79,37,79],"d":0,"e":[["W",-34.0,27.1,0.9,-43.3],["S",0.9,-43.3,34.0,-27.1],["E",34.0,-27.1,-0.9,43.3],["N",-0.9,43.3,-34.0,27.1]]},{"i":"B1003","n":"Central Library","z":"2","f":7,"w":61.0,"L":[98,142,98,142],"d":0,"e":[["W",-15.6,40.6,-23.5,17.7],["S",-23.5,17.7,-10.4,13.3],["E",-10.4,13.3,-7.3,22.2],["S",-7.3,22.2,-3.6,21.0],["W",-3.6,21.0,-11.3,-1.9],["N",-11.3,-1.9,-26.5,3.4],["W",-26.5,3.4,-44.4,-48.1],["S",-44.4,-48.1,6.4,-65.4],["E",6.4,-65.4,23.6,-15.7],["N",23.6,-15.7,20.0,-14.5],["E",20.0,-14.5,21.1,-11.2],["S",21.1,-11.2,22.8,-11.8],["E",22.8,-11.8,24.2,-7.7],["S",24.2,-7.7,31.6,-10.2],["W",31.6,-10.2,30.7,-12.8],["S",30.7,-12.8,39.7,-15.9],["E",39.7,-15.9,44.4,-2.4],["N",44.4,-2.4,38.0,-0.2],["E",38.0,-0.2,41.1,8.9],["N",41.1,8.9,7.9,20.2],["E",7.9,20.2,19.0,52.3],["S",19.0,52.3,26.4,49.8],["E",26.4,49.8,31.1,63.2],["N",31.1,63.2,25.5,65.1],["W",25.5,65.1,24.2,61.5],["N",24.2,61.5,12.5,65.4],["W",12.5,65.4,7.4,50.7],["N",7.4,50.7,-1.0,53.5],["W",-1.0,53.5,-6.5,37.5],["N",-6.5,37.5,-15.6,40.6]]},{"i":"B1090","n":"Central Library Annexe","z":"2","f":6,"w":7.7,"L":[35,61,35,61],"d":0,"e":[["W",-4.1,34.7,-25.3,-22.9],["S",-25.3,-22.9,7.4,-34.7],["E",7.4,-34.7,24.0,10.4],["N",24.0,10.4,20.7,11.6],["E",20.7,11.6,25.3,24.1],["N",25.3,24.1,-4.1,34.7]]},{"i":"B1245","n":"Centre for Instructional Technology","z":"2","f":2,"w":30.8,"L":[20,11,20,11],"d":0,"e":[["W",-5.6,10.0,-11.5,0.6],["S",-11.5,0.6,5.6,-10.0],["E",5.6,-10.0,11.5,-0.6],["N",11.5,-0.6,-5.6,10.0]]},{"i":"B1244","n":"Centre for Protective Technology","z":"2","f":2,"w":29.8,"L":[20,10,20,10],"d":0,"e":[["W",-5.8,9.6,-11.2,1.1],["S",-11.2,1.1,5.8,-9.6],["E",5.8,-9.6,11.2,-1.1],["N",11.2,-1.1,-5.8,9.6]]},{"i":"B1089","n":"Chinese Library","z":"2","f":1,"w":52.0,"L":[43,52,43,52],"d":0,"e":[["N",22.8,21.4,-3.1,30.3],["W",-3.1,30.3,-9.1,13.2],["N",-9.1,13.2,-16.5,15.7],["W",-16.5,15.7,-27.6,-16.4],["S",-27.6,-16.4,13.0,-30.3],["E",13.0,-30.3,27.6,11.9],["N",27.6,11.9,20.4,14.3],["E",20.4,14.3,22.8,21.4]]},{"i":"B1094","n":"LT3","z":"2","f":1,"w":3.2,"L":[24,44,25,45],"d":0,"e":[["W",1.8,24.3,-3.9,8.6],["N",-3.9,8.6,-8.5,10.2],["W",-8.5,10.2,-15.3,-8.2],["S",-15.3,-8.2,-0.1,-13.8],["W",-0.1,-13.8,-2.8,-21.6],["S",-2.8,-21.6,5.7,-24.3],["E",5.7,-24.3,14.0,1.9],["N",14.0,1.9,9.7,3.8],["E",9.7,3.8,15.3,19.5],["N",15.3,19.5,1.8,24.3]]},{"i":"B1095","n":"LT4","z":"2","f":1,"w":4.2,"L":[21,44,20,43],"d":0,"e":[["W",-7.8,-4.2,-13.1,-19.2],["S",-13.1,-19.2,0.0,-23.8],["E",0.0,-23.8,5.2,-8.6],["S",5.2,-8.6,6.7,-9.0],["E",6.7,-9.0,13.1,9.2],["N",13.1,9.2,9.5,10.6],["E",9.5,10.6,12.2,18.2],["N",12.2,18.2,-3.8,23.8],["W",-3.8,23.8,-12.2,-2.3],["S",-12.2,-2.3,-7.8,-4.2]]},{"i":"B1253","n":"Ridge View Residential College (BLK A)","z":"2","f":4,"w":26.1,"L":[46,42,46,42],"d":0,"e":[["N",25.8,3.6,8.3,9.5],["W",8.3,9.5,3.6,-4.3],["N",3.6,-4.3,-15.4,2.0],["E",-15.4,2.0,-11.2,14.5],["N",-11.2,14.5,-18.2,16.9],["W",-18.2,16.9,-25.8,-5.6],["S",-25.8,-5.6,-12.3,-10.1],["E",-12.3,-10.1,-10.6,-5.3],["S",-10.6,-5.3,2.8,-9.7],["W",2.8,-9.7,1.5,-13.6],["S",1.5,-13.6,11.4,-16.9],["E",11.4,-16.9,15.5,-4.6],["S",15.5,-4.6,22.3,-6.9],["E",22.3,-6.9,25.8,3.6]]},{"i":"B1255","n":"Ridge View Residential College (BLK B)","z":"2","f":4,"w":22.2,"L":[43,46,43,46],"d":0,"e":[["N",7.0,-16.3,-10.8,-10.0],["E",-10.8,-10.0,-3.9,9.3],["S",-3.9,9.3,13.9,3.1],["E",13.9,3.1,19.2,18.1],["N",19.2,18.1,8.8,21.8],["W",8.8,21.8,4.7,10.2],["N",4.7,10.2,-7.9,14.6],["W",-7.9,14.6,-19.2,-17.1],["S",-19.2,-17.1,-8.9,-20.7],["E",-8.9,-20.7,-7.7,-17.3],["S",-7.7,-17.3,5.0,-21.8],["E",5.0,-21.8,7.0,-16.3]]},{"i":"B1254","n":"Ridge View Residential College (BLK C)","z":"2","f":4,"w":23.1,"L":[53,40,53,40],"d":0,"e":[["S",-22.9,-16.7,-9.7,-21.7],["E",-9.7,-21.7,-8.2,-17.7],["S",-8.2,-17.7,4.1,-22.4],["E",4.1,-22.4,12.9,0.6],["S",12.9,0.6,18.8,-1.6],["E",18.8,-1.6,22.9,9.1],["N",22.9,9.1,-12.1,22.4],["W",-12.1,22.4,-14.9,15.1],["S",-14.9,15.1,3.4,8.2],["W",3.4,8.2,-3.8,-10.7],["N",-3.8,-10.7,-18.5,-5.3],["W",-18.5,-5.3,-22.9,-16.7]]},{"i":"B1256","n":"Ridge View Residential College (BLK D)","z":"2","f":4,"w":20.1,"L":[50,55,49,55],"d":0,"e":[["N",7.7,-20.4,-12.5,-13.8],["E",-12.5,-13.8,-3.7,12.1],["S",-3.7,12.1,1.3,10.4],["E",1.3,10.4,3.6,17.1],["S",3.6,17.1,10.7,14.8],["W",10.7,14.8,8.2,7.4],["S",8.2,7.4,16.1,4.7],["E",16.1,4.7,20.9,18.9],["N",20.9,18.9,1.7,25.3],["W",1.7,25.3,-0.7,18.3],["N",-0.7,18.3,-8.3,20.8],["W",-8.3,20.8,-20.9,-16.4],["S",-20.9,-16.4,5.8,-25.3],["E",5.8,-25.3,7.7,-20.4]]},{"i":"B1257","n":"Ridge View Residential College (BLK E)","z":"2","f":4,"w":21.1,"L":[40,55,40,55],"d":0,"e":[["E",-16.1,-12.6,-8.7,8.8],["S",-8.7,8.8,12.0,1.8],["W",12.0,1.8,5.4,-17.4],["S",5.4,-17.4,16.2,-21.1],["E",16.2,-21.1,20.5,-8.6],["N",20.5,-8.6,17.5,-7.6],["E",17.5,-7.6,22.2,6.0],["N",22.2,6.0,1.3,13.1],["E",1.3,13.1,2.9,18.0],["N",2.9,18.0,-6.1,21.1],["W",-6.1,21.1,-7.9,15.7],["N",-7.9,15.7,-12.6,17.3],["W",-12.6,17.3,-22.2,-10.5],["S",-22.2,-10.5,-16.1,-12.6]]},{"i":"B1252","n":"Ridge View Residential College (BLK F)","z":"2","f":8,"w":19.7,"L":[52,57,52,57],"d":0,"e":[["W",-19.5,18.4,-27.5,-3.5],["S",-27.5,-3.5,-17.7,-6.8],["E",-17.7,-6.8,-14.2,3.4],["S",-14.2,3.4,-8.5,1.5],["W",-8.5,1.5,-11.8,-8.1],["S",-11.8,-8.1,0.6,-12.3],["E",0.6,-12.3,3.3,-4.5],["S",3.3,-4.5,6.5,-5.6],["W",6.5,-5.6,3.7,-14.0],["S",3.7,-14.0,19.4,-19.3],["E",19.4,-19.3,22.5,-10.2],["N",22.5,-10.2,19.9,-9.3],["E",19.9,-9.3,22.3,-2.2],["S",22.3,-2.2,24.8,-3.0],["E",24.8,-3.0,27.5,5.1],["N",27.5,5.1,12.4,10.2],["W",12.4,10.2,11.0,6.1],["N",11.0,6.1,7.4,7.3],["E",7.4,7.3,10.0,15.1],["N",10.0,15.1,-2.4,19.3],["W",-2.4,19.3,-5.6,9.9],["N",-5.6,9.9,-11.9,12.0],["E",-11.9,12.0,-10.5,15.8],["N",-10.5,15.8,-19.5,18.4]]},{"i":"B1291","n":"Ridge View Residential College (BLK G)","z":"2","f":4,"w":10.2,"L":[77,59,77,59],"d":0,"e":[["N",23.1,2.3,-15.3,16.4],["W",-15.3,16.4,-15.9,14.9],["N",-15.9,14.9,-27.3,19.1],["W",-27.3,19.1,-31.2,8.7],["N",-31.2,8.7,-40.4,12.1],["W",-40.4,12.1,-46.4,-3.8],["S",-46.4,-3.8,25.7,-30.2],["E",25.7,-30.2,46.4,25.5],["N",46.4,25.5,33.5,30.2],["W",33.5,30.2,23.1,2.3]]},{"i":"B1193","n":"S2S","z":"2","f":2,"w":16.4,"L":[41,19,41,19],"d":0,"e":[["W",-14.8,16.5,-22.8,-0.4],["S",-22.8,-0.4,15.1,-16.5],["E",15.1,-16.5,22.8,0.7],["N",22.8,0.7,-14.8,16.5]]},{"i":"B1350","n":"Singapore Nuclear Research and Safety Initiative","z":"2","f":6,"w":63.1,"L":[94,57,88,42],"d":0,"e":[["W",-40.7,32.7,-46.9,18.0],["S",-46.9,18.0,-13.0,8.4],["E",-13.0,8.4,-11.4,14.8],["E",-11.4,14.8,-7.8,16.9],["S",-7.8,16.9,-3.3,17.2],["S",-3.3,17.2,1.1,15.7],["S",1.1,15.7,6.1,10.1],["W",6.1,10.1,7.1,6.6],["W",7.1,6.6,7.1,2.3],["W",7.1,2.3,4.9,-6.0],["W",4.9,-6.0,-0.1,-14.0],["S",-0.1,-14.0,30.7,-32.7],["E",30.7,-32.7,46.9,-6.4],["N",46.9,-6.4,29.2,4.4],["E",29.2,4.4,31.3,19.5],["N",31.3,19.5,-3.2,23.0],["N",-3.2,23.0,-40.7,32.7]]},{"i":"B1290","n":"Technology Centre for Offshore and Marine","z":"2","f":5,"w":10.2,"L":[88,74,89,74],"d":0,"e":[["E",27.2,-50.9,55.3,17.2],["N",55.3,17.2,-25.7,50.9],["W",-25.7,50.9,-55.3,-16.6],["S",-55.3,-16.6,27.2,-50.9]]},{"i":"B1025","n":"Temasek Life Sciences Laboratory","z":"2","f":5,"w":16.6,"L":[153,94,156,102],"d":0,"e":[["W",-76.5,28.5,-71.7,-4.8],["S",-71.7,-4.8,26.7,6.9],["E",26.7,6.9,24.7,17.8],["S",24.7,17.8,40.3,21.3],["W",40.3,21.3,48.5,-1.9],["N",48.5,-1.9,29.9,-5.5],["W",29.9,-5.5,40.3,-41.7],["S",40.3,-41.7,62.0,-33.5],["S",62.0,-33.5,76.5,-22.9],["E",76.5,-22.9,55.8,40.7],["N",55.8,40.7,36.4,34.2],["W",36.4,34.2,38.1,27.9],["N",38.1,27.9,24.1,25.5],["E",24.1,25.5,22.1,41.7],["N",22.1,41.7,-76.5,28.5]]},{"i":"B1243","n":"Tropical Marine Science Institute-1","z":"2","f":2,"w":31.7,"L":[20,11,20,11],"d":0,"e":[["W",-5.8,9.9,-11.6,0.8],["S",-11.6,0.8,5.8,-9.9],["E",5.8,-9.9,11.6,-0.8],["N",11.6,-0.8,-5.8,9.9]]},{"i":"B1242","n":"Tropical Marine Science Institute-2","z":"2","f":2,"w":30.6,"L":[22,10,22,10],"d":0,"e":[["W",-7.6,9.2,-12.0,-0.3],["S",-12.0,-0.3,7.6,-9.2],["E",7.6,-9.2,12.0,0.3],["N",12.0,0.3,-7.6,9.2]]},{"i":"B1001","n":"University Health Centre","z":"2","f":3,"w":47.6,"L":[64,49,64,49],"d":0,"e":[["W",-26.2,25.7,-32.6,7.1],["S",-32.6,7.1,-16.3,1.5],["W",-16.3,1.5,-19.5,-7.7],["S",-19.5,-7.7,-8.8,-11.3],["E",-8.8,-11.3,-6.4,-4.4],["S",-6.4,-4.4,4.2,-8.0],["W",4.2,-8.0,0.3,-19.2],["S",0.3,-19.2,23.2,-27.0],["E",23.2,-27.0,32.6,0.2],["N",32.6,0.2,0.0,11.3],["E",0.0,11.3,4.1,23.2],["N",4.1,23.2,-7.1,27.0],["W",-7.1,27.0,-9.6,20.0],["N",-9.6,20.0,-26.2,25.7]]},{"i":"B1004","n":"Yusof Ishak House","z":"2","f":4,"w":47.6,"L":[132,92,142,92],"d":0,"e":[["W",-68.4,-10.7,-59.6,-29.1],["S",-59.6,-29.1,-46.1,-22.8],["W",-46.1,-22.8,-39.1,-37.5],["S",-39.1,-37.5,-20.4,-28.7],["E",-20.4,-28.7,-24.6,-19.8],["S",-24.6,-19.8,-20.8,-18.1],["W",-20.8,-18.1,-17.4,-25.2],["S",-17.4,-25.2,-3.1,-18.5],["W",-3.1,-18.5,-0.4,-24.2],["S",-0.4,-24.2,8.8,-19.9],["W",8.8,-19.9,14.5,-31.8],["S",14.5,-31.8,33.6,-22.8],["W",33.6,-22.8,41.1,-38.5],["S",41.1,-38.5,68.4,-25.6],["E",68.4,-25.6,53.0,6.0],["N",53.0,6.0,40.3,-1.4],["E",40.3,-1.4,35.8,8.2],["S",35.8,8.2,43.0,14.6],["S",43.0,14.6,49.7,12.9],["S",49.7,12.9,51.6,16.2],["E",51.6,16.2,48.5,17.3],["S",48.5,17.3,50.3,21.2],["E",50.3,21.2,42.7,28.4],["N",42.7,28.4,29.7,22.3],["E",29.7,22.3,25.1,31.9],["N",25.1,31.9,15.9,27.5],["E",15.9,27.5,10.7,38.5],["N",10.7,38.5,-6.5,30.4],["W",-6.5,30.4,-4.2,25.4],["N",-4.2,25.4,-15.3,20.2],["W",-15.3,20.2,-13.0,15.3],["N",-13.0,15.3,-68.4,-10.7]]},{"i":"B1139","n":"Brenner Center for Molecular Medicine","z":"3","f":6,"w":66.4,"L":[48,29,45,31],"d":0,"e":[["E",4.6,-15.6,9.6,-2.1],["S",9.6,-2.1,16.4,-4.3],["W",16.4,-4.3,17.6,-7.6],["S",17.6,-7.6,20.9,-6.6],["E",20.9,-6.6,24.0,-3.4],["E",24.0,-3.4,26.6,0.1],["E",26.6,0.1,25.4,5.8],["N",25.4,5.8,-2.6,15.6],["W",-2.6,15.6,-8.5,-3.1],["N",-8.5,-3.1,-25.3,3.1],["W",-25.3,3.1,-26.6,-0.9],["S",-26.6,-0.9,-24.3,-1.8],["W",-24.3,-1.8,-25.5,-5.2],["S",-25.5,-5.2,4.6,-15.6]]},{"i":"B1131","n":"Centre for Life Sciences (CeLS)","z":"3","f":5,"w":66.4,"L":[118,54,120,60],"d":0,"e":[["W",-51.2,43.2,-60.5,15.4],["S",-60.5,15.4,-6.5,-4.2],["W",-6.5,-4.2,-8.9,-10.6],["S",-8.9,-10.6,4.1,-15.3],["E",4.1,-15.3,6.5,-8.5],["S",6.5,-8.5,16.9,-12.2],["W",16.9,-12.2,11.7,-27.0],["S",11.7,-27.0,24.1,-31.6],["W",24.1,-31.6,21.8,-39.0],["S",21.8,-39.0,33.5,-43.2],["S",33.5,-43.2,45.0,-38.6],["E",45.0,-38.6,60.5,5.0],["N",60.5,5.0,-51.2,43.2]]},{"i":"B1124","n":"DSO@Kent Ridge","z":"3","f":14,"w":20.0,"L":[38,40,34,44],"d":0,"e":[["W",-9.3,26.7,-23.3,-15.4],["S",-23.3,-15.4,9.1,-26.7],["E",9.1,-26.7,18.8,-0.9],["N",18.8,-0.9,17.8,1.2],["E",17.8,1.2,22.1,5.0],["E",22.1,5.0,23.3,8.8],["E",23.3,8.8,22.8,11.7],["N",22.8,11.7,19.8,15.6],["N",19.8,15.6,-9.3,26.7]]},{"i":"B1122","n":"Frontier","z":"3","f":2,"w":45.0,"L":[89,42,60,30],"d":0,"e":[["W",-31.8,-6.0,-24.2,-22.5],["S",-24.2,-22.5,-16.6,-25.4],["S",-16.6,-25.4,2.2,-16.7],["S",2.2,-16.7,16.0,-21.4],["E",16.0,-21.4,21.6,-6.5],["S",21.6,-6.5,34.2,-11.2],["E",34.2,-11.2,39.7,4.1],["N",39.7,4.1,21.3,10.5],["E",21.3,10.5,24.2,19.3],["N",24.2,19.3,6.1,25.4],["N",6.1,25.4,-39.7,3.9],["W",-39.7,3.9,-34.3,-7.2],["S",-34.3,-7.2,-31.8,-6.0]]},{"i":"B1258","n":"Frontier (AC)","z":"3","f":2,"w":68.6,"L":[28,44,55,30],"d":0,"e":[["S",-27.3,-19.3,27.3,-19.6],["E",27.3,-19.6,8.0,19.6],["N",8.0,19.6,-17.3,8.4],["W",-17.3,8.4,-27.3,-19.3]]},{"i":"B1106","n":"LT20","z":"3","f":1,"w":6.1,"L":[16,22,16,22],"d":0,"e":[["W",-11.9,6.3,-3.5,-11.5],["S",-3.5,-11.5,-1.6,-10.7],["W",-1.6,-10.7,-0.6,-12.9],["S",-0.6,-12.9,11.9,-6.6],["E",11.9,-6.6,2.7,12.9],["N",2.7,12.9,-11.9,6.3]]},{"i":"B1110","n":"LT21","z":"3","f":1,"w":5.0,"L":[16,25,16,24],"d":0,"e":[["W",-3.1,14.2,-11.5,-8.8],["S",-11.5,-8.8,3.4,-14.2],["E",3.4,-14.2,11.5,9.1],["N",11.5,9.1,-3.1,14.2]]},{"i":"B1123","n":"LT26","z":"3","f":1,"w":4.5,"L":[27,24,27,25],"d":0,"e":[["N",15.6,4.5,-9.6,13.7],["W",-9.6,13.7,-15.6,-3.2],["S",-15.6,-3.2,-12.2,-4.5],["W",-12.2,-4.5,-14.4,-10.9],["S",-14.4,-10.9,-9.1,-12.4],["E",-9.1,-12.4,-7.2,-7.7],["S",-7.2,-7.7,9.2,-13.7],["E",9.2,-13.7,15.6,4.5]]},{"i":"B1118","n":"LT27","z":"3","f":2,"w":2.3,"L":[24,34,32,36],"d":0,"e":[["N",4.8,19.6,-4.2,15.2],["N",-4.2,15.2,-6.2,14.9],["N",-6.2,14.9,-10.5,16.7],["W",-10.5,16.7,-19.2,-8.1],["S",-19.2,-8.1,-13.5,-10.9],["W",-13.5,-10.9,-9.6,-19.6],["S",-9.6,-19.6,7.5,-12.1],["S",7.5,-12.1,13.8,-14.3],["E",13.8,-14.3,19.2,0.8],["N",19.2,0.8,12.2,3.0],["E",12.2,3.0,4.8,19.6]]},{"i":"B1117","n":"LT28","z":"3","f":1,"w":3.9,"L":[20,28,20,27],"d":0,"e":[["W",-4.7,16.2,-13.9,-9.2],["S",-13.9,-9.2,4.5,-16.2],["E",4.5,-16.2,13.9,9.6],["N",13.9,9.6,-4.7,16.2]]},{"i":"B1116","n":"LT29","z":"3","f":1,"w":4.2,"L":[14,26,14,26],"d":0,"e":[["W",-2.0,14.7,-11.0,-10.2],["S",-11.0,-10.2,1.9,-14.7],["E",1.9,-14.7,11.0,10.1],["N",11.0,10.1,-2.0,14.7]]},{"i":"B1144","n":"LT32","z":"3","f":1,"w":5.0,"L":[27,18,27,18],"d":0,"e":[["W",-9.4,9.3,-15.6,-7.9],["S",-15.6,-7.9,0.8,-13.4],["S",0.8,-13.4,9.8,-9.6],["E",9.8,-9.6,15.6,7.6],["N",15.6,7.6,0.3,13.4],["N",0.3,13.4,-9.4,9.3]]},{"i":"B1143","n":"LT33","z":"3","f":5,"w":24.6,"L":[16,16,16,16],"d":0,"e":[["N",7.7,8.6,-8.1,7.6],["W",-8.1,7.6,-7.0,-8.6],["S",-7.0,-8.6,5.5,-7.8],["E",5.5,-7.8,4.9,1.2],["S",4.9,1.2,8.1,1.4],["E",8.1,1.4,7.7,8.6]]},{"i":"B1141","n":"LT34","z":"3","f":5,"w":4.9,"L":[21,23,17,20],"d":0,"e":[["N",7.6,12.1,-2.0,11.5],["W",-2.0,11.5,1.6,3.6],["N",1.6,3.6,-8.7,-1.1],["W",-8.7,-1.1,-8.0,-12.1],["S",-8.0,-12.1,-1.1,-11.6],["E",-1.1,-11.6,-1.5,-4.7],["S",-1.5,-4.7,8.7,-4.1],["E",8.7,-4.1,7.6,12.1]]},{"i":"B1134","n":"MD1","z":"3","f":17,"w":27.9,"L":[91,37,90,38],"d":0,"e":[["E",37.2,-32.0,42.4,-17.6],["N",42.4,-17.6,28.8,-12.6],["E",28.8,-12.6,36.5,7.5],["N",36.5,7.5,0.3,19.9],["W",0.3,19.9,-0.3,17.8],["N",-0.3,17.8,-36.0,32.0],["W",-36.0,32.0,-42.4,13.3],["S",-42.4,13.3,-17.0,3.9],["W",-17.0,3.9,-17.6,2.0],["S",-17.6,2.0,-14.1,0.8],["W",-14.1,0.8,-15.8,-3.7],["S",-15.8,-3.7,-12.0,-5.0],["W",-12.0,-5.0,-12.8,-7.2],["S",-12.8,-7.2,-9.7,-8.3],["W",-9.7,-8.3,-10.4,-10.2],["S",-10.4,-10.2,22.9,-22.2],["W",22.9,-22.2,21.3,-26.5],["S",21.3,-26.5,37.2,-32.0]]},{"i":"B1121","n":"MD10","z":"3","f":4,"w":45.3,"L":[69,36,68,33],"d":0,"e":[["S",-22.2,2.3,-14.9,-0.3],["W",-14.9,-0.3,-16.2,-3.5],["S",-16.2,-3.5,-11.9,-7.2],["W",-11.9,-7.2,-11.9,-10.1],["S",-11.9,-10.1,17.2,-20.5],["E",17.2,-20.5,18.9,-16.3],["S",18.9,-16.3,25.4,-19.0],["E",25.4,-19.0,27.4,-14.4],["S",27.4,-14.4,31.4,-15.9],["E",31.4,-15.9,33.6,-9.3],["N",33.6,-9.3,29.8,-8.1],["E",29.8,-8.1,31.5,-3.0],["N",31.5,-3.0,25.9,-0.8],["E",25.9,-0.8,27.9,4.3],["N",27.9,4.3,-16.1,20.5],["W",-16.1,20.5,-17.9,15.6],["N",-17.9,15.6,-28.9,19.5],["W",-28.9,19.5,-33.5,6.9],["S",-33.5,6.9,-31.8,5.7],["W",-31.8,5.7,-33.6,0.8],["S",-33.6,0.8,-27.5,-1.5],["E",-27.5,-1.5,-24.7,6.3],["S",-24.7,6.3,-21.1,5.0],["W",-21.1,5.0,-22.2,2.3]]},{"i":"B1126","n":"MD11","z":"3","f":6,"w":36.6,"L":[42,56,42,56],"d":0,"e":[["W",-9.1,33.7,-28.8,-19.1],["S",-28.8,-19.1,11.1,-33.7],["E",11.1,-33.7,28.8,13.8],["N",28.8,13.8,10.3,20.6],["E",10.3,20.6,12.3,25.9],["N",12.3,25.9,-9.1,33.7]]},{"i":"B1136","n":"MD2","z":"3","f":7,"w":82.3,"L":[72,28,72,30],"d":0,"e":[["E",30.4,-23.1,39.0,1.2],["N",39.0,1.2,-20.7,23.1],["W",-20.7,23.1,-22.7,18.1],["N",-22.7,18.1,-29.1,20.6],["W",-29.1,20.6,-32.5,10.8],["N",-32.5,10.8,-34.3,11.7],["W",-34.3,11.7,-39.0,-1.3],["S",-39.0,-1.3,-16.6,-9.1],["E",-16.6,-9.1,-15.5,-6.8],["S",-15.5,-6.8,30.4,-23.1]]},{"i":"B1135","n":"MD3","z":"3","f":6,"w":43.2,"L":[30,50,29,49],"d":0,"e":[["W",-3.8,25.4,-6.8,17.0],["N",-6.8,17.0,-9.9,18.3],["W",-9.9,18.3,-19.6,-9.3],["S",-19.6,-9.3,-18.0,-10.3],["W",-18.0,-10.3,-20.7,-17.7],["S",-20.7,-17.7,0.8,-26.0],["E",0.8,-26.0,13.7,9.0],["S",13.7,9.0,17.4,7.6],["E",17.4,7.6,20.7,15.7],["N",20.7,15.7,8.1,19.9],["E",8.1,19.9,9.6,23.7],["N",9.6,23.7,2.6,26.0],["W",2.6,26.0,1.7,23.7],["N",1.7,23.7,-3.8,25.4]]},{"i":"B1130","n":"MD4","z":"3","f":5,"w":64.8,"L":[59,22,59,23],"d":0,"e":[["S",-24.6,3.8,-19.0,1.8],["W",-19.0,1.8,-21.3,-4.2],["S",-21.3,-4.2,22.5,-19.5],["E",22.5,-19.5,28.8,-1.8],["N",28.8,-1.8,-16.4,14.8],["E",-16.4,14.8,-15.3,18.2],["N",-15.3,18.2,-19.0,19.5],["W",-19.0,19.5,-21.1,13.6],["N",-21.1,13.6,-27.4,16.0],["W",-27.4,16.0,-28.5,13.1],["W",-28.5,13.1,-28.8,12.2],["S",-28.8,12.2,-22.5,9.9],["W",-22.5,9.9,-24.6,3.8]]},{"i":"B1132","n":"MD4A","z":"3","f":5,"w":66.2,"L":[52,18,51,18],"d":0,"e":[["E",20.6,-16.1,25.7,-2.3],["N",25.7,-2.3,-11.3,10.6],["E",-11.3,10.6,-10.0,14.1],["N",-10.0,14.1,-15.6,16.1],["W",-15.6,16.1,-17.3,11.2],["N",-17.3,11.2,-23.4,13.4],["W",-23.4,13.4,-25.6,6.7],["S",-25.6,6.7,-24.9,6.4],["W",-24.9,6.4,-25.7,3.8],["S",-25.7,3.8,-20.8,2.0],["W",-20.8,2.0,-21.7,-0.6],["S",-21.7,-0.6,20.6,-16.1]]},{"i":"B1137","n":"MD6","z":"3","f":17,"w":75.5,"L":[58,69,65,72],"d":0,"e":[["W",0.5,36.7,-10.1,7.9],["N",-10.1,7.9,-26.1,14.0],["W",-26.1,14.0,-33.0,-4.3],["S",-33.0,-4.3,-22.5,-8.4],["W",-22.5,-8.4,-29.6,-28.4],["S",-29.6,-28.4,-6.4,-36.7],["E",-6.4,-36.7,-2.5,-25.9],["S",-2.5,-25.9,24.5,-35.4],["E",24.5,-35.4,32.6,-16.4],["E",32.6,-16.4,33.0,9.6],["N",33.0,9.6,30.2,14.7],["N",30.2,14.7,25.0,16.8],["E",25.0,16.8,25.7,21.0],["N",25.7,21.0,21.8,22.2],["E",21.8,22.2,23.9,28.1],["N",23.9,28.1,0.5,36.7]]},{"i":"B1125","n":"MD7","z":"3","f":5,"w":42.9,"L":[62,34,62,34],"d":0,"e":[["S",-29.9,8.7,14.9,-7.3],["W",14.9,-7.3,13.7,-10.2],["S",13.7,-10.2,18.1,-12.0],["W",18.1,-12.0,13.7,-23.6],["S",13.7,-23.6,20.3,-26.2],["E",20.3,-26.2,21.6,-23.3],["S",21.6,-23.3,23.9,-24.0],["E",23.9,-24.0,29.9,-8.0],["N",29.9,-8.0,24.3,-5.8],["E",24.3,-5.8,28.9,7.5],["N",28.9,7.5,-23.7,26.2],["W",-23.7,26.2,-29.9,8.7]]},{"i":"B1120","n":"MD9","z":"3","f":4,"w":25.9,"L":[57,22,58,22],"d":0,"e":[["N",30.0,0.8,-12.8,16.2],["W",-12.8,16.2,-15.1,10.7],["N",-15.1,10.7,-20.7,12.8],["W",-20.7,12.8,-22.7,8.1],["N",-22.7,8.1,-27.9,9.9],["W",-27.9,9.9,-30.0,4.2],["S",-30.0,4.2,-24.6,2.4],["W",-24.6,2.4,-26.3,-2.6],["S",-26.3,-2.6,-20.9,-4.4],["E",-20.9,-4.4,-19.5,-0.7],["S",-19.5,-0.7,23.9,-16.2],["E",23.9,-16.2,30.0,0.8]]},{"i":"B1140","n":"Medicine+Science Library","z":"3","f":4,"w":3.8,"L":[113,33,107,43],"d":0,"e":[["W",-36.9,2.4,-41.0,-8.7],["W",-41.0,-8.7,-40.5,-11.6],["S",-40.5,-11.6,-38.4,-14.5],["S",-38.4,-14.5,18.6,-34.8],["S",18.6,-34.8,24.2,-34.5],["E",24.2,-34.5,29.6,-32.7],["E",29.6,-32.7,33.8,-30.0],["E",33.8,-30.0,39.3,-23.1],["E",39.3,-23.1,41.0,-18.0],["E",41.0,-18.0,40.7,-9.7],["N",40.7,-9.7,25.9,4.7],["N",25.9,4.7,-18.9,34.8],["W",-18.9,34.8,-26.4,23.8],["S",-26.4,23.8,-2.8,5.8],["W",-2.8,5.8,-4.0,2.7],["N",-4.0,2.7,-11.9,5.4],["W",-11.9,5.4,-14.7,-1.9],["S",-14.7,-1.9,-7.2,-4.7],["W",-7.2,-4.7,-8.6,-7.9],["N",-8.6,-7.9,-36.9,2.4]]},{"i":"B1103","n":"S1","z":"3","f":3,"w":38.5,"L":[27,33,28,32],"d":0,"e":[["W",3.0,17.1,0.3,10.9],["N",0.3,10.9,-8.2,14.0],["W",-8.2,14.0,-17.0,-10.2],["S",-17.0,-10.2,1.2,-17.1],["E",1.2,-17.1,4.3,-7.9],["N",4.3,-7.9,1.6,-7.0],["E",1.6,-7.0,3.7,-1.6],["S",3.7,-1.6,11.5,-3.9],["E",11.5,-3.9,17.0,12.2],["N",17.0,12.2,3.0,17.1]]},{"i":"B1113","n":"S10","z":"3","f":3,"w":57.1,"L":[37,37,37,37],"d":0,"e":[["W",-3.7,17.3,-9.6,1.2],["N",-9.6,1.2,-19.4,4.8],["W",-19.4,4.8,-23.6,-6.7],["S",-23.6,-6.7,11.0,-19.2],["E",11.0,-19.2,23.6,15.2],["N",23.6,15.2,12.6,19.2],["W",12.6,19.2,10.0,12.3],["N",10.0,12.3,-3.7,17.3]]},{"i":"B1098","n":"S11","z":"3","f":4,"w":65.4,"L":[21,32,21,32],"d":0,"e":[["W",-4.4,18.5,-15.3,-11.3],["S",-15.3,-11.3,4.4,-18.5],["E",4.4,-18.5,15.3,11.4],["N",15.3,11.4,-4.4,18.5]]},{"i":"B1097","n":"S12","z":"3","f":4,"w":68.2,"L":[65,23,65,23],"d":0,"e":[["W",-28.7,19.6,-33.9,5.5],["S",-33.9,5.5,17.3,-13.0],["W",17.3,-13.0,15.7,-17.4],["S",15.7,-17.4,25.9,-21.1],["E",25.9,-21.1,33.9,0.8],["N",33.9,0.8,-22.2,21.1],["W",-22.2,21.1,-23.4,17.7],["N",-23.4,17.7,-28.7,19.6]]},{"i":"B1099","n":"S13","z":"3","f":5,"w":43.1,"L":[59,24,64,23],"d":0,"e":[["W",-22.3,20.9,-30.2,-0.4],["S",-30.2,-0.4,26.1,-20.9],["E",26.1,-20.9,30.2,-10.0],["N",30.2,-10.0,23.4,-7.5],["S",23.4,-7.5,27.3,-5.7],["E",27.3,-5.7,24.5,0.4],["N",24.5,0.4,21.3,-1.1],["N",21.3,-1.1,19.2,-0.3],["E",19.2,-0.3,21.1,5.1],["N",21.1,5.1,-22.3,20.9]]},{"i":"B1093","n":"S14","z":"3","f":6,"w":45.7,"L":[66,19,66,20],"d":0,"e":[["W",-32.1,-5.5,-25.7,-18.9],["S",-25.7,-18.9,-22.3,-17.1],["W",-22.3,-17.1,-19.9,-21.9],["S",-19.9,-21.9,27.1,0.6],["E",27.1,0.6,23.4,8.2],["S",23.4,8.2,32.1,12.4],["E",32.1,12.4,27.5,21.9],["N",27.5,21.9,-32.1,-5.5]]},{"i":"B1115","n":"S15","z":"3","f":6,"w":50.0,"L":[67,26,67,26],"d":0,"e":[["N",28.4,24.1,22.8,21.4],["E",22.8,21.4,21.8,23.5],["N",21.8,23.5,-28.5,-0.6],["E",-28.5,-0.6,-29.8,2.0],["N",-29.8,2.0,-34.4,-0.2],["W",-34.4,-0.2,-22.8,-24.1],["S",-22.8,-24.1,13.8,-6.5],["E",13.8,-6.5,12.8,-4.5],["S",12.8,-4.5,31.6,4.5],["E",31.6,4.5,29.3,9.2],["S",29.3,9.2,34.4,11.7],["E",34.4,11.7,28.4,24.1]]},{"i":"B1114","n":"S16","z":"3","f":9,"w":55.8,"L":[62,52,62,52],"d":0,"e":[["E",-15.8,16.3,-20.7,28.1],["N",-20.7,28.1,-38.7,19.2],["W",-38.7,19.2,-16.7,-28.1],["S",-16.7,-28.1,36.7,-3.5],["S",36.7,-3.5,38.7,-0.5],["E",38.7,-0.5,31.4,15.5],["N",31.4,15.5,12.3,6.3],["E",12.3,6.3,3.1,25.5],["N",3.1,25.5,-15.8,16.3]]},{"i":"B1142","n":"S17","z":"3","f":8,"w":15.2,"L":[62,20,62,20],"d":0,"e":[["W",-30.4,-2.9,-27.8,-8.5],["N",-27.8,-8.5,-31.3,-10.1],["W",-31.3,-10.1,-27.6,-18.1],["S",-27.6,-18.1,-24.3,-16.6],["W",-24.3,-16.6,-22.0,-21.4],["S",-22.0,-21.4,31.3,3.0],["E",31.3,3.0,22.8,21.4],["N",22.8,21.4,-30.4,-2.9]]},{"i":"B1102","n":"S1A","z":"3","f":7,"w":23.2,"L":[60,38,64,49],"d":0,"e":[["S",-0.5,-26.7,23.2,-15.6],["E",23.2,-15.6,36.3,20.4],["N",36.3,20.4,17.4,26.7],["W",17.4,26.7,7.6,-1.0],["N",7.6,-1.0,-2.0,-5.2],["N",-2.0,-5.2,-30.1,4.7],["W",-30.1,4.7,-36.3,-13.7],["S",-36.3,-13.7,-0.5,-26.7]]},{"i":"B1104","n":"S2","z":"3","f":5,"w":56.8,"L":[66,48,67,47],"d":0,"e":[["N",39.2,6.4,-6.1,22.6],["W",-6.1,22.6,-7.9,17.5],["N",-7.9,17.5,-17.1,19.9],["W",-17.1,19.9,-19.2,15.6],["N",-19.2,15.6,-26.7,18.3],["W",-26.7,18.3,-39.2,-16.2],["S",-39.2,-16.2,-21.9,-22.6],["E",-21.9,-22.6,-12.5,4.4],["S",-12.5,4.4,33.2,-12.1],["E",33.2,-12.1,39.2,6.4]]},{"i":"B1105","n":"S3","z":"3","f":6,"w":39.6,"L":[68,20,69,20],"d":0,"e":[["N",-25.5,-1.0,-31.0,-4.8],["W",-31.0,-4.8,-33.1,-11.3],["W",-33.1,-11.3,-29.0,-19.1],["S",-29.0,-19.1,-19.4,-14.7],["W",-19.4,-14.7,-17.1,-18.5],["S",-17.1,-18.5,30.6,3.6],["E",30.6,3.6,27.8,9.2],["S",27.8,9.2,33.1,11.5],["E",33.1,11.5,32.8,19.1],["N",32.8,19.1,19.2,13.0],["E",19.2,13.0,16.6,18.5],["N",16.6,18.5,-25.5,-1.0]]},{"i":"B1107","n":"S4","z":"3","f":5,"w":41.6,"L":[56,19,57,18],"d":0,"e":[["W",-22.9,16.6,-29.3,-0.7],["S",-29.3,-0.7,14.0,-16.6],["E",14.0,-16.6,15.7,-12.0],["S",15.7,-12.0,25.5,-15.6],["E",25.5,-15.6,29.3,-4.9],["N",29.3,-4.9,19.3,-1.2],["E",19.3,-1.2,20.1,0.9],["N",20.1,0.9,-22.9,16.6]]},{"i":"B1108","n":"S4A","z":"3","f":3,"w":44.1,"L":[46,19,46,19],"d":0,"e":[["E",18.6,-15.6,24.4,0.4],["N",24.4,0.4,17.3,2.9],["E",17.3,2.9,18.1,5.2],["N",18.1,5.2,-11.2,15.6],["W",-11.2,15.6,-12.0,13.2],["N",-12.0,13.2,-18.7,15.6],["W",-18.7,15.6,-24.4,-0.3],["S",-24.4,-0.3,18.6,-15.6]]},{"i":"B1109","n":"S5","z":"3","f":6,"w":62.5,"L":[68,26,65,33],"d":0,"e":[["W",-18.5,25.5,-23.8,10.8],["N",-23.8,10.8,-28.5,12.5],["W",-28.5,12.5,-33.3,-0.8],["S",-33.3,-0.8,17.2,-18.7],["W",17.2,-18.7,16.1,-21.7],["S",16.1,-21.7,27.0,-25.5],["E",27.0,-25.5,32.0,-11.6],["N",32.0,-11.6,29.4,-10.6],["E",29.4,-10.6,33.3,0.2],["N",33.3,0.2,29.3,8.6],["N",29.3,8.6,-18.5,25.5]]},{"i":"B1138","n":"S6","z":"3","f":6,"w":71.0,"L":[85,55,87,55],"d":0,"e":[["W",-1.6,-9.8,-5.6,-22.7],["N",-5.6,-22.7,-10.2,-21.1],["W",-10.2,-21.1,-12.8,-28.6],["S",-12.8,-28.6,2.2,-33.8],["E",2.2,-33.8,4.7,-27.0],["S",4.7,-27.0,23.4,-33.8],["E",23.4,-33.8,30.4,-13.9],["S",30.4,-13.9,37.2,-16.2],["E",37.2,-16.2,40.4,-6.8],["N",40.4,-6.8,33.8,-4.6],["E",33.8,-4.6,34.6,-2.2],["N",34.6,-2.2,10.1,6.7],["E",10.1,6.7,12.9,18.2],["N",12.9,18.2,4.7,20.8],["E",4.7,20.8,5.6,23.1],["N",5.6,23.1,-23.9,33.8],["W",-23.9,33.8,-31.3,13.6],["N",-31.3,13.6,-38.3,16.2],["W",-38.3,16.2,-40.4,10.8],["S",-40.4,10.8,-32.9,8.4],["W",-32.9,8.4,-35.3,2.8],["S",-35.3,2.8,-1.6,-9.8]]},{"i":"B1100","n":"S7","z":"3","f":4,"w":57.1,"L":[52,19,52,19],"d":0,"e":[["N",27.9,0.8,-17.8,17.3],["W",-17.8,17.3,-19.3,13.3],["N",-19.3,13.3,-22.6,14.5],["W",-22.6,14.5,-27.9,0.3],["S",-27.9,0.3,21.3,-17.3],["E",21.3,-17.3,27.9,0.8]]},{"i":"B1101","n":"S8","z":"3","f":5,"w":51.2,"L":[58,22,59,22],"d":0,"e":[["N",30.7,-2.9,-14.6,13.5],["E",-14.6,13.5,-13.4,16.7],["N",-13.4,16.7,-23.2,20.3],["W",-23.2,20.3,-30.7,-0.3],["S",-30.7,-0.3,24.3,-20.3],["E",24.3,-20.3,30.7,-2.9]]},{"i":"B1112","n":"S9","z":"3","f":16,"w":31.6,"L":[57,67,43,57],"d":0,"e":[["W",-17.8,35.8,-36.8,-18.1],["S",-36.8,-18.1,-19.6,-26.9],["S",-19.6,-26.9,2.4,-35.8],["E",2.4,-35.8,19.6,-20.3],["E",19.6,-20.3,30.6,3.7],["E",30.6,3.7,36.8,19.7],["N",36.8,19.7,-17.8,35.8]]},{"i":"B1091","n":"University Hall (East Wing)","z":"3","f":6,"w":22.5,"L":[88,76,87,68],"d":0,"e":[["S",-35.2,-17.7,9.4,-45.2],["E",9.4,-45.2,35.2,26.5],["N",35.2,26.5,-17.1,45.2],["W",-17.1,45.2,-22.4,26.8],["S",-22.4,26.8,9.1,12.4],["W",9.1,12.4,-0.7,-13.6],["N",-0.7,-13.6,-29.4,2.2],["W",-29.4,2.2,-35.2,-17.7]]},{"i":"B1092","n":"University Hall (West Wing)","z":"3","f":6,"w":51.8,"L":[34,70,52,60],"d":0,"e":[["W",-0.8,39.0,-31.9,-11.7],["S",-31.9,-11.7,12.5,-39.0],["E",12.5,-39.0,31.9,28.0],["N",31.9,28.0,-0.8,39.0]]},{"i":"B1147","n":"AS1","z":"4","f":5,"w":53.7,"L":[112,56,86,21],"d":0,"e":[["N",29.8,39.9,16.7,3.1],["N",16.7,3.1,-48.8,-28.4],["W",-48.8,-28.4,-43.2,-39.9],["S",-43.2,-39.9,27.3,-5.7],["E",27.3,-5.7,38.8,28.4],["W",38.8,28.4,46.1,25.8],["S",46.1,25.8,48.8,33.0],["E",48.8,33.0,29.8,39.9]]},{"i":"B1146","n":"AS2","z":"4","f":6,"w":53.1,"L":[88,61,80,67],"d":0,"e":[["W",-55.9,17.4,-57.8,11.7],["N",-57.8,11.7,-62.6,13.6],["W",-62.6,13.6,-64.8,7.4],["S",-64.8,7.4,10.2,-19.4],["E",10.2,-19.4,64.8,8.2],["N",64.8,8.2,58.9,19.4],["W",58.9,19.4,10.1,-4.9],["N",10.1,-4.9,-8.8,1.0],["N",-8.8,1.0,-55.9,17.4]]},{"i":"B1150","n":"AS3","z":"4","f":6,"w":54.1,"L":[68,53,58,45],"d":1,"e":[["N",38.1,18.2,4.9,2.3],["N",4.9,2.3,-3.9,-1.1],["E",-3.9,-1.1,-34.2,10.3],["S",-34.2,10.3,-32.5,16.1],["E",-32.5,16.1,-37.5,17.9],["N",-37.5,17.9,-44.6,-2.9],["W",-44.6,-2.9,-1.9,-18.2],["S",-1.9,-18.2,7.3,-12.8],["S",7.3,-12.8,44.6,4.7],["E",44.6,4.7,38.1,18.2]]},{"i":"B1153","n":"AS4","z":"4","f":6,"w":51.9,"L":[114,26,115,31],"d":0,"e":[["W",-54.2,-18.5,-51.3,-25.0],["S",-51.3,-25.0,-46.8,-23.0],["W",-46.8,-23.0,-42.9,-31.2],["S",-42.9,-31.2,27.1,2.4],["W",27.1,2.4,30.1,-3.2],["S",30.1,-3.2,36.2,0.1],["W",36.2,0.1,38.3,-4.1],["S",38.3,-4.1,41.3,-3.0],["S",41.3,-3.0,43.2,-1.3],["S",43.2,-1.3,46.2,5.0],["E",46.2,5.0,42.8,10.2],["S",42.8,10.2,54.2,16.2],["E",54.2,16.2,49.2,30.0],["E",49.2,30.0,48.6,31.2],["N",48.6,31.2,31.0,22.3],["E",31.0,22.3,29.3,25.4],["N",29.3,25.4,18.9,19.9],["W",18.9,19.9,20.4,16.4],["N",20.4,16.4,-54.2,-18.5]]},{"i":"B1168","n":"AS5","z":"4","f":6,"w":55.1,"L":[21,76,22,90],"d":0,"e":[["W",-13.2,14.5,-25.3,-18.8],["N",-25.3,-18.8,-30.7,-16.9],["W",-30.7,-16.9,-34.0,-25.5],["S",-34.0,-25.5,-13.1,-33.2],["E",-13.1,-33.2,0.4,3.0],["E",0.4,3.0,34.0,19.6],["N",34.0,19.6,27.7,33.2],["W",27.7,33.2,-13.2,14.5]]},{"i":"B1016","n":"AS6","z":"4","f":5,"w":48.0,"L":[48,105,50,93],"d":0,"e":[["N",-41.0,42.1,-46.1,26.5],["W",-46.1,26.5,-24.6,18.6],["W",-24.6,18.6,4.3,-42.1],["S",4.3,-42.1,37.3,-24.1],["S",37.3,-24.1,46.1,-15.0],["E",46.1,-15.0,43.0,-12.0],["N",43.0,-12.0,39.9,-15.2],["N",39.9,-15.2,35.8,-17.8],["E",35.8,-17.8,34.4,-14.6],["N",34.4,-14.6,30.7,-16.7],["W",30.7,-16.7,31.9,-19.6],["N",31.9,-19.6,16.0,-27.9],["E",16.0,-27.9,-11.9,31.9],["E",-11.9,31.9,-41.0,42.1]]},{"i":"B1163","n":"AS7","z":"4","f":6,"w":56.8,"L":[58,67,59,68],"d":0,"e":[["E",1.1,-5.4,7.7,14.2],["S",7.7,14.2,12.6,12.4],["E",12.6,12.4,18.4,29.8],["N",18.4,29.8,-11.6,40.7],["W",-11.6,40.7,-26.1,-1.6],["S",-26.1,-1.6,-18.4,-4.1],["W",-18.4,-4.1,-22.5,-15.6],["S",-22.5,-15.6,-10.9,-19.5],["W",-10.9,-19.5,-13.6,-27.3],["S",-13.6,-27.3,-9.6,-28.8],["W",-9.6,-28.8,-10.5,-31.5],["S",-10.5,-31.5,17.0,-40.7],["E",17.0,-40.7,26.1,-14.2],["N",26.1,-14.2,1.1,-5.4]]},{"i":"B1000","n":"AS8","z":"4","f":7,"w":80.5,"L":[71,40,70,35],"d":0,"e":[["W",-27.8,29.0,-39.8,-4.1],["S",-39.8,-4.1,26.2,-29.0],["E",26.2,-29.0,39.8,8.2],["N",39.8,8.2,-27.8,29.0]]},{"i":"B1087","n":"BIZ1 (Mochtar Riady Building)","z":"4","f":8,"w":63.6,"L":[80,29,89,16],"d":0,"e":[["W",-42.8,15.6,-37.1,0.2],["S",-37.1,0.2,-23.8,-12.3],["S",-23.8,-12.3,-16.8,-16.5],["S",-16.8,-16.5,-11.0,-18.9],["S",-11.0,-18.9,3.6,-19.6],["S",3.6,-19.6,15.6,-24.4],["S",15.6,-24.4,29.0,-25.6],["S",29.0,-25.6,42.8,-19.2],["E",42.8,-19.2,31.4,7.2],["N",31.4,7.2,14.4,10.8],["N",14.4,10.8,5.5,16.0],["N",5.5,16.0,-8.4,18.6],["N",-8.4,18.6,-22.2,25.6],["N",-22.2,25.6,-42.8,15.6]]},{"i":"B1010","n":"BIZ2","z":"4","f":6,"w":54.2,"L":[146,20,163,21],"d":0,"e":[["W",-43.7,51.5,-62.5,42.9],["S",-62.5,42.9,-33.7,-18.9],["S",-33.7,-18.9,55.4,-51.5],["E",55.4,-51.5,62.5,-32.5],["N",62.5,-32.5,-18.3,-2.9],["N",-18.3,-2.9,-43.7,51.5]]},{"i":"B1015","n":"COM1","z":"4","f":3,"w":26.6,"L":[47,114,46,106],"d":1,"e":[["N",-26.2,54.5,-40.5,39.5],["W",-40.5,39.5,-24.7,21.0],["N",-24.7,21.0,-45.0,3.7],["W",-45.0,3.7,-0.6,-50.1],["S",-0.6,-50.1,5.0,-45.7],["W",5.0,-45.7,12.4,-54.5],["S",12.4,-54.5,19.1,-53.6],["S",19.1,-53.6,27.8,-46.3],["S",27.8,-46.3,45.0,-34.6],["E",45.0,-34.6,19.1,0.3],["E",19.1,0.3,-26.2,54.5]]},{"i":"B1012","n":"COM2","z":"4","f":4,"w":28.4,"L":[70,131,38,97],"d":0,"e":[["N",-11.3,64.0,-29.1,15.7],["W",-29.1,15.7,12.0,-72.1],["S",12.0,-72.1,29.1,-64.4],["E",29.1,-64.4,-6.8,15.5],["E",-6.8,15.5,3.6,48.0],["S",3.6,48.0,10.4,65.7],["E",10.4,65.7,4.1,72.1],["N",4.1,72.1,-4.6,64.9],["N",-4.6,64.9,-11.3,64.0]]},{"i":"B1351","n":"COM3","z":"4","f":2,"w":3.2,"L":[129,96,97,103],"d":0,"e":[["N",8.0,57.2,-3.5,53.9],["N",-3.5,53.9,-15.9,53.2],["N",-15.9,53.2,-28.6,54.4],["N",-28.6,54.4,-40.1,58.4],["N",-40.1,58.4,-55.0,46.1],["W",-55.0,46.1,-29.0,11.2],["W",-29.0,11.2,-28.2,7.0],["W",-28.2,7.0,-28.9,-0.4],["N",-28.9,-0.4,-32.7,-7.3],["N",-32.7,-7.3,-39.5,-13.6],["E",-39.5,-13.6,-42.2,-12.5],["N",-42.2,-12.5,-46.7,-24.6],["W",-46.7,-24.6,-26.7,-68.1],["S",-26.7,-68.1,-3.7,-57.4],["E",-3.7,-57.4,-7.8,-48.5],["S",-7.8,-48.5,-1.8,-45.8],["E",-1.8,-45.8,-2.8,-35.4],["E",-2.8,-35.4,-1.4,-23.6],["E",-1.4,-23.6,2.3,-9.4],["S",2.3,-9.4,8.1,0.1],["S",8.1,0.1,15.0,7.6],["S",15.0,7.6,23.3,13.1],["S",23.3,13.1,55.0,25.6],["E",55.0,25.6,36.0,68.1],["N",36.0,68.1,8.0,57.2]]},{"i":"B1348","n":"COM4","z":"4","f":5,"w":64.7,"L":[54,37,46,37],"d":0,"e":[["S",-13.4,-28.2,27.7,-7.8],["E",27.7,-7.8,21.3,28.2],["N",21.3,28.2,-11.3,11.7],["N",-11.3,11.7,-27.7,6.3],["W",-27.7,6.3,-13.4,-28.2]]},{"i":"B1184","n":"Eusoff Hall (BLK A)","z":"4","f":4,"w":44.1,"L":[42,35,42,36],"d":0,"e":[["W",-22.1,-5.8,-11.8,-25.1],["S",-11.8,-25.1,-0.2,-19.5],["E",-0.2,-19.5,-3.9,-12.0],["S",-3.9,-12.0,22.1,1.1],["E",22.1,1.1,9.9,25.1],["N",9.9,25.1,-5.1,18.2],["W",-5.1,18.2,1.1,5.4],["N",1.1,5.4,-22.1,-5.8]]},{"i":"B1182","n":"Eusoff Hall (BLK B & C)","z":"4","f":4,"w":46.5,"L":[61,84,61,85],"d":0,"e":[["S",12.6,-27.4,32.6,-17.0],["W",32.6,-17.0,35.8,-22.8],["S",35.8,-22.8,43.7,-18.2],["E",43.7,-18.2,33.3,0.5],["N",33.3,0.5,13.9,-9.1],["E",13.9,-9.1,-8.1,36.0],["N",-8.1,36.0,-29.2,24.7],["E",-29.2,24.7,-32.7,31.4],["N",-32.7,31.4,-43.7,26.3],["W",-43.7,26.3,-40.5,19.5],["S",-40.5,19.5,-37.8,20.4],["W",-37.8,20.4,-30.7,7.3],["S",-30.7,7.3,-14.9,15.6],["W",-14.9,15.6,-1.1,-13.9],["N",-1.1,-13.9,-4.0,-15.4],["W",-4.0,-15.4,7.1,-36.0],["S",7.1,-36.0,15.0,-32.1],["E",15.0,-32.1,12.6,-27.4]]},{"i":"B1181","n":"Eusoff Hall (BLK D)","z":"4","f":4,"w":45.0,"L":[40,48,44,48],"d":0,"e":[["W",-4.0,23.2,-1.2,17.4],["N",-1.2,17.4,-5.7,15.3],["W",-5.7,15.3,2.1,-0.9],["N",2.1,-0.9,-6.2,-5.2],["E",-6.2,-5.2,-10.3,3.0],["N",-10.3,3.0,-21.3,-2.4],["W",-21.3,-2.4,-16.0,-14.3],["N",-16.0,-14.3,-22.1,-17.3],["W",-22.1,-17.3,-17.7,-26.6],["S",-17.7,-26.6,22.1,-7.2],["E",22.1,-7.2,2.1,26.6],["N",2.1,26.6,-4.0,23.2]]},{"i":"B1180","n":"Eusoff Hall (BLK E)","z":"4","f":4,"w":48.2,"L":[55,34,56,35],"d":0,"e":[["W",9.1,16.2,12.1,11.7],["N",12.1,11.7,-6.0,2.5],["W",-6.0,2.5,-5.0,-0.5],["N",-5.0,-0.5,-7.9,-2.1],["E",-7.9,-2.1,-14.5,10.3],["N",-14.5,10.3,-29.0,3.1],["W",-29.0,3.1,-22.3,-11.9],["N",-22.3,-11.9,-25.4,-13.4],["W",-25.4,-13.4,-20.9,-21.8],["S",-20.9,-21.8,29.0,4.4],["E",29.0,4.4,18.9,21.8],["N",18.9,21.8,9.1,16.2]]},{"i":"B1183","n":"Eusoff Hall (Communal Hall)","z":"4","f":4,"w":43.9,"L":[34,67,37,84],"d":0,"e":[["W",-2.9,40.3,-14.3,6.3],["S",-14.3,6.3,-10.5,4.9],["W",-10.5,4.9,-18.4,-16.4],["W",-18.4,-16.4,-8.5,-40.3],["S",-8.5,-40.3,4.6,-33.1],["E",4.6,-33.1,2.2,-28.0],["S",2.2,-28.0,18.4,-19.3],["E",18.4,-19.3,14.3,-11.6],["N",14.3,-11.6,4.5,-16.5],["E",4.5,-16.5,16.2,24.0],["N",16.2,24.0,11.0,25.6],["E",11.0,25.6,12.8,32.3],["N",12.8,32.3,9.0,33.2],["E",9.0,33.2,10.3,36.8],["N",10.3,36.8,-2.9,40.3]]},{"i":"B1007","n":"Hon Sui Sen Memorial Library","z":"4","f":4,"w":42.0,"L":[79,58,80,60],"d":0,"e":[["S",-13.2,-34.7,35.4,-11.0],["E",35.4,-11.0,32.3,-4.7],["S",32.3,-4.7,36.0,-3.0],["E",36.0,-3.0,32.8,3.6],["S",32.8,3.6,37.7,6.1],["E",37.7,6.1,28.7,23.7],["N",28.7,23.7,-1.8,9.9],["E",-1.8,9.9,-4.9,15.9],["S",-4.9,15.9,-1.7,17.6],["E",-1.7,17.6,-6.4,27.4],["S",-6.4,27.4,-3.7,28.7],["E",-3.7,28.7,-6.6,34.7],["N",-6.6,34.7,-22.0,27.8],["W",-22.0,27.8,-18.8,18.5],["N",-18.8,18.5,-33.0,12.1],["W",-33.0,12.1,-31.6,9.3],["N",-31.6,9.3,-37.7,6.1],["W",-37.7,6.1,-31.4,-7.9],["S",-31.4,-7.9,-22.2,-3.8],["W",-22.2,-3.8,-17.7,-12.9],["N",-17.7,-12.9,-23.1,-15.0],["W",-23.1,-15.0,-13.2,-34.7]]},{"i":"B1008","n":"I3","z":"4","f":5,"w":85.5,"L":[126,70,80,84],"d":0,"e":[["W",-51.4,28.1,-41.3,4.6],["W",-41.3,4.6,-31.9,-14.7],["N",-31.9,-14.7,-36.4,-16.9],["W",-36.4,-16.9,-29.8,-30.6],["S",-29.8,-30.6,-17.8,-34.7],["E",-17.8,-34.7,-15.4,-27.3],["S",-15.4,-27.3,48.2,-50.1],["E",48.2,-50.1,50.9,-41.7],["N",50.9,-41.7,46.6,-40.4],["E",46.6,-40.4,51.4,-26.0],["N",51.4,-26.0,37.3,-21.0],["E",37.3,-21.0,41.1,-11.7],["N",41.1,-11.7,-3.0,4.1],["N",-3.0,4.1,-11.7,21.0],["N",-11.7,21.0,-17.8,18.2],["N",-17.8,18.2,-22.0,26.7],["E",-22.0,26.7,-16.7,29.7],["E",-16.7,29.7,-26.3,50.1],["N",-26.3,50.1,-43.7,42.2],["W",-43.7,42.2,-39.9,33.8],["W",-39.9,33.8,-51.4,28.1]]},{"i":"B1013","n":"Innovation 4.0","z":"4","f":6,"w":50.4,"L":[70,118,69,107],"d":0,"e":[["W",-43.5,29.9,-33.0,7.0],["W",-33.0,7.0,-36.0,-4.3],["W",-36.0,-4.3,-27.5,-9.6],["W",-27.5,-9.6,-24.9,-15.3],["W",-24.9,-15.3,-26.3,-24.2],["W",-26.3,-24.2,-18.1,-29.1],["S",-18.1,-29.1,-15.3,-27.9],["W",-15.3,-27.9,-9.5,-40.3],["S",-9.5,-40.3,10.4,-46.9],["S",10.4,-46.9,27.4,-44.8],["S",27.4,-44.8,43.5,-31.8],["E",43.5,-31.8,41.2,-23.3],["E",41.2,-23.3,42.2,-16.7],["E",42.2,-16.7,36.6,-12.0],["E",36.6,-12.0,37.9,-5.5],["E",37.9,-5.5,31.7,0.3],["N",31.7,0.3,25.3,-1.0],["E",25.3,-1.0,23.5,6.6],["S",23.5,6.6,30.6,8.1],["E",30.6,8.1,31.7,16.0],["E",31.7,16.0,26.8,20.6],["E",26.8,20.6,28.2,27.2],["E",28.2,27.2,21.2,33.8],["E",21.2,33.8,19.9,42.0],["N",19.9,42.0,4.8,39.1],["W",4.8,39.1,11.5,18.8],["N",11.5,18.8,2.6,15.6],["E",2.6,15.6,-8.2,46.9],["N",-8.2,46.9,-43.5,29.9]]},{"i":"B1341","n":"Institute of Systems Science","z":"4","f":6,"w":17.9,"L":[73,76,58,83],"d":0,"e":[["N",9.3,23.4,-18.8,32.9],["W",-18.8,32.9,-32.3,-5.7],["W",-32.3,-5.7,-31.6,-13.3],["S",-31.6,-13.3,-25.2,-12.5],["W",-25.2,-12.5,-19.4,-24.6],["S",-19.4,-24.6,-5.2,-32.9],["E",-5.2,-32.9,1.5,-13.5],["S",1.5,-13.5,4.5,-14.5],["S",4.5,-14.5,8.9,-13.7],["E",8.9,-13.7,11.3,-11.8],["E",11.3,-11.8,12.4,-9.1],["S",12.4,-9.1,14.3,-9.5],["W",14.3,-9.5,13.7,-11.7],["S",13.7,-11.7,26.8,-15.9],["E",26.8,-15.9,29.6,-8.2],["N",29.6,-8.2,27.1,-7.6],["E",27.1,-7.6,29.3,-0.5],["N",29.3,-0.5,25.4,1.3],["E",25.4,1.3,32.3,20.4],["N",32.3,20.4,10.9,27.9],["W",10.9,27.9,9.3,23.4],["E",2.9,1.6,7.2,14.1],["S",7.2,14.1,18.6,10.1],["W",18.6,10.1,14.2,-3.6],["N",14.2,-3.6,12.3,-3.1],["N",12.3,-3.1,8.9,0.8],["N",8.9,0.8,5.9,2.1],["N",5.9,2.1,2.9,1.6]]},{"i":"B1293","n":"Kent Ridge (Communal Hall)","z":"4","f":4,"w":22.1,"L":[66,31,69,24],"d":0,"e":[["S",-36.5,1.6,6.1,-19.2],["E",6.1,-19.2,8.6,-13.9],["S",8.6,-13.9,27.9,-23.0],["E",27.9,-23.0,36.5,0.9],["N",36.5,0.9,5.7,14.4],["N",5.7,14.4,-25.3,23.0],["W",-25.3,23.0,-36.5,1.6]]},{"i":"B1009","n":"Kent Ridge Guild House-1","z":"4","f":2,"w":57.1,"L":[62,83,66,87],"d":0,"e":[["W",11.6,42.8,11.0,27.1],["N",11.0,27.1,-8.3,27.1],["W",-8.3,27.1,-14.4,20.5],["W",-14.4,20.5,-15.3,-4.9],["N",-15.3,-4.9,-34.2,-4.7],["W",-34.2,-4.7,-35.1,-33.5],["S",-35.1,-33.5,-27.4,-34.9],["W",-27.4,-34.9,-27.7,-42.8],["S",-27.7,-42.8,15.6,-41.7],["E",15.6,-41.7,15.8,-9.2],["S",15.8,-9.2,18.9,-8.3],["E",18.9,-8.3,19.5,-3.5],["S",19.5,-3.5,31.4,-1.8],["E",31.4,-1.8,35.1,2.7],["E",35.1,2.7,35.1,42.6],["N",35.1,42.6,11.6,42.8]]},{"i":"B1332","n":"Kent Ridge Guild House-2","z":"4","f":2,"w":24.0,"L":[11,130,38,110],"d":1,"e":[["W",30.3,53.9,-25.7,-5.5],["S",-25.7,-5.5,-24.9,-7.4],["W",-24.9,-7.4,-34.5,-16.5],["S",-34.5,-16.5,-32.0,-19.6],["W",-32.0,-19.6,-41.6,-30.6],["S",-41.6,-30.6,-19.7,-53.9],["E",-19.7,-53.9,24.2,-4.8],["E",24.2,-4.8,41.6,15.5],["E",41.6,15.5,41.3,33.9],["N",41.3,33.9,38.5,34.4],["E",38.5,34.4,38.2,53.9],["N",38.2,53.9,30.3,53.9]]},{"i":"B1274","n":"Kent Ridge Hall (BLK A)","z":"4","f":5,"w":24.3,"L":[27,25,27,25],"d":0,"e":[["W",-9.5,17.1,-14.8,6.1],["S",-14.8,6.1,-2.0,0.0],["W",-2.0,0.0,-7.6,-11.7],["S",-7.6,-11.7,3.9,-17.1],["E",3.9,-17.1,14.8,5.6],["N",14.8,5.6,-9.5,17.1]]},{"i":"B1279","n":"Kent Ridge Hall (BLK B)","z":"4","f":5,"w":25.5,"L":[24,25,24,25],"d":0,"e":[["N",2.0,2.9,-10.7,9.9],["W",-10.7,9.9,-16.1,0.3],["S",-16.1,0.3,-3.3,-6.8],["W",-3.3,-6.8,-4.2,-8.5],["S",-4.2,-8.5,4.4,-13.1],["E",4.4,-13.1,16.1,8.6],["N",16.1,8.6,7.5,13.1],["W",7.5,13.1,2.0,2.9]]},{"i":"B1278","n":"Kent Ridge Hall (BLK C)","z":"4","f":5,"w":26.7,"L":[27,23,27,23],"d":0,"e":[["W",-6.3,13.3,-17.3,-7.2],["S",-17.3,-7.2,-5.7,-13.3],["E",-5.7,-13.3,0.1,-2.7],["S",0.1,-2.7,12.0,-9.0],["E",12.0,-9.0,17.3,0.8],["N",17.3,0.8,-6.3,13.3]]},{"i":"B1277","n":"Kent Ridge Hall (BLK D)","z":"4","f":5,"w":25.4,"L":[23,24,23,24],"d":0,"e":[["S",-3.9,-8.6,3.5,-12.5],["E",3.5,-12.5,14.9,8.6],["N",14.9,8.6,7.5,12.5],["W",7.5,12.5,3.1,4.5],["N",3.1,4.5,-9.5,11.2],["W",-9.5,11.2,-14.9,1.2],["S",-14.9,1.2,-2.2,-5.5],["W",-2.2,-5.5,-3.9,-8.6]]},{"i":"B1276","n":"Kent Ridge Hall (BLK E)","z":"4","f":5,"w":24.4,"L":[26,25,26,25],"d":0,"e":[["S",-14.6,-5.0,8.1,-17.0],["E",8.1,-17.0,14.6,-5.0],["N",14.6,-5.0,2.4,1.4],["E",2.4,1.4,7.8,11.4],["N",7.8,11.4,-2.7,17.0],["W",-2.7,17.0,-14.6,-5.0]]},{"i":"B1156","n":"LT10","z":"4","f":1,"w":51.0,"L":[18,13,18,14],"d":0,"e":[["W",-11.0,2.3,-5.0,-10.0],["S",-5.0,-10.0,11.0,-2.2],["E",11.0,-2.2,5.9,10.0],["N",5.9,10.0,-11.0,2.3]]},{"i":"B1145","n":"LT11","z":"4","f":1,"w":2.0,"L":[19,30,17,28],"d":0,"e":[["N",-1.3,14.1,-17.2,4.0],["W",-17.2,4.0,-10.7,-9.9],["W",-10.7,-9.9,1.8,-14.1],["S",1.8,-14.1,17.2,-6.5],["E",17.2,-6.5,9.3,10.2],["E",9.3,10.2,-1.3,14.1]]},{"i":"B1149","n":"LT12","z":"4","f":1,"w":3.0,"L":[16,13,16,13],"d":0,"e":[["W",-5.3,9.1,-9.7,-3.3],["S",-9.7,-3.3,5.5,-9.1],["E",5.5,-9.1,9.7,3.6],["N",9.7,3.6,-5.3,9.1]]},{"i":"B1148","n":"LT13","z":"4","f":1,"w":2.5,"L":[19,30,17,38],"d":0,"e":[["W",-8.9,13.9,-15.3,-4.2],["W",-15.3,-4.2,-9.7,-11.1],["S",-9.7,-11.1,-5.6,-8.0],["W",-5.6,-8.0,0.3,-15.9],["S",0.3,-15.9,11.4,-10.4],["E",11.4,-10.4,15.3,2.2],["E",15.3,2.2,10.6,13.3],["N",10.6,13.3,1.1,11.3],["E",1.1,11.3,-0.1,15.9],["N",-0.1,15.9,-8.9,13.9]]},{"i":"B1162","n":"LT14","z":"4","f":1,"w":3.2,"L":[14,13,14,14],"d":0,"e":[["W",-9.4,3.4,-3.3,-9.0],["S",-3.3,-9.0,9.4,-3.0],["E",9.4,-3.0,3.2,9.0],["N",3.2,9.0,-9.4,3.4]]},{"i":"B1161","n":"LT15","z":"4","f":1,"w":3.3,"L":[16,17,17,17],"d":0,"e":[["W",-11.0,4.3,-3.8,-11.4],["S",-3.8,-11.4,11.0,-4.0],["E",11.0,-4.0,3.6,11.4],["N",3.6,11.4,-11.0,4.3]]},{"i":"B1171","n":"LT16","z":"4","f":1,"w":3.2,"L":[29,9,26,16],"d":0,"e":[["S",-6.7,-9.3,8.1,-14.8],["E",8.1,-14.8,11.3,-6.0],["N",11.3,-6.0,3.1,11.5],["N",3.1,11.5,-5.9,14.8],["W",-5.9,14.8,-11.3,-0.4],["S",-11.3,-0.4,-6.7,-9.3]]},{"i":"B1172","n":"LT17","z":"4","f":1,"w":3.0,"L":[29,10,26,17],"d":0,"e":[["S",-7.1,-9.6,8.2,-15.0],["E",8.2,-15.0,11.4,-6.0],["N",11.4,-6.0,3.2,11.5],["N",3.2,11.5,-5.6,15.0],["W",-5.6,15.0,-11.4,-0.5],["S",-11.4,-0.5,-7.1,-9.6]]},{"i":"B1173","n":"LT18","z":"4","f":1,"w":2.7,"L":[14,23,15,23],"d":0,"e":[["E",11.3,-7.4,1.8,13.6],["N",1.8,13.6,-11.3,7.7],["W",-11.3,7.7,-2.5,-13.6],["S",-2.5,-13.6,11.3,-7.4]]},{"i":"B1175","n":"LT19","z":"4","f":1,"w":2.1,"L":[19,34,19,34],"d":0,"e":[["W",-15.4,11.7,-1.6,-19.4],["S",-1.6,-19.4,15.4,-11.8],["E",15.4,-11.8,1.8,19.4],["N",1.8,19.4,-15.4,11.7]]},{"i":"B1169","n":"LT8","z":"4","f":1,"w":1.2,"L":[15,30,20,32],"d":0,"e":[["N",17.3,8.5,3.5,14.3],["W",3.5,14.3,-12.1,6.6],["W",-12.1,6.6,-17.3,-7.2],["S",-17.3,-7.2,0.9,-14.3],["E",0.9,-14.3,11.3,-9.4],["E",11.3,-9.4,17.3,8.5]]},{"i":"B1155","n":"LT9","z":"4","f":1,"w":52.2,"L":[18,17,18,17],"d":0,"e":[["W",-12.0,4.0,-4.5,-11.7],["S",-4.5,-11.7,12.0,-3.7],["E",12.0,-3.7,4.5,11.7],["N",4.5,11.7,-12.0,4.0]]},{"i":"B1170","n":"Shaw Foundation Alumni House","z":"4","f":5,"w":21.9,"L":[57,70,40,58],"d":1,"e":[["E",18.1,-28.3,18.9,-19.5],["S",18.9,-19.5,30.9,-10.0],["E",30.9,-10.0,5.2,45.8],["N",5.2,45.8,-0.7,41.9],["N",-0.7,41.9,-17.8,21.3],["N",-17.8,21.3,-30.9,1.8],["W",-30.9,1.8,-19.9,-7.6],["W",-19.9,-7.6,1.0,-45.8],["S",1.0,-45.8,18.1,-28.3]]},{"i":"B1275","n":"Sheares Hall (BLK A)","z":"4","f":7,"w":30.1,"L":[34,26,34,26],"d":0,"e":[["S",-20.5,-9.5,-5.8,-14.7],["E",-5.8,-14.7,-0.4,0.4],["S",-0.4,0.4,17.3,-5.9],["E",17.3,-5.9,20.5,3.2],["N",20.5,3.2,-11.7,14.7],["W",-11.7,14.7,-20.5,-9.5]]},{"i":"B1294","n":"Sheares Hall (BLK B)","z":"4","f":7,"w":36.6,"L":[30,24,30,24],"d":0,"e":[["E",-3.3,-14.2,1.0,-2.7],["S",1.0,-2.7,14.1,-7.6],["E",14.1,-7.6,18.4,3.8],["N",18.4,3.8,-9.8,14.2],["W",-9.8,14.2,-18.4,-8.7],["S",-18.4,-8.7,-3.3,-14.2]]},{"i":"B1280","n":"Sheares Hall (BLK C)","z":"4","f":9,"w":29.8,"L":[29,25,29,25],"d":0,"e":[["N",17.9,8.6,1.8,14.6],["W",1.8,14.6,-2.8,2.0],["N",-2.8,2.0,-13.9,6.0],["W",-13.9,6.0,-17.9,-4.9],["S",-17.9,-4.9,9.4,-14.6],["E",9.4,-14.6,17.9,8.6]]},{"i":"B1281","n":"Sheares Hall (BLK D)","z":"4","f":7,"w":33.5,"L":[29,25,29,25],"d":0,"e":[["W",-9.1,14.7,-18.0,-9.1],["S",-18.0,-9.1,-2.8,-14.7],["E",-2.8,-14.7,-0.1,-7.4],["S",-0.1,-7.4,11.8,-11.7],["E",11.8,-11.7,18.0,4.8],["N",18.0,4.8,-9.1,14.7]]},{"i":"B1297","n":"Sheares Hall (BLK E)","z":"4","f":7,"w":28.6,"L":[28,26,28,26],"d":0,"e":[["S",-18.0,-4.7,8.6,-14.8],["E",8.6,-14.8,18.0,9.5],["N",18.0,9.5,4.1,14.8],["W",4.1,14.8,-0.6,2.3],["N",-0.6,2.3,-13.4,7.1],["W",-13.4,7.1,-18.0,-4.7]]},{"i":"B1344","n":"Singapore Synchrotron Light Source","z":"4","f":2,"w":17.6,"L":[46,40,60,44],"d":0,"e":[["N",-6.2,26.0,-21.4,21.1],["W",-21.4,21.1,-28.4,12.7],["W",-28.4,12.7,-31.3,7.5],["W",-31.3,7.5,-32.3,1.1],["W",-32.3,1.1,-32.1,-5.6],["W",-32.1,-5.6,-29.5,-12.6],["W",-29.5,-12.6,-25.5,-17.9],["S",-25.5,-17.9,-20.9,-21.9],["S",-20.9,-21.9,-14.3,-25.1],["S",-14.3,-25.1,-7.3,-26.0],["S",-7.3,-26.0,0.7,-24.9],["S",0.7,-24.9,9.2,-20.7],["S",9.2,-20.7,14.8,-15.5],["E",14.8,-15.5,18.3,-8.7],["E",18.3,-8.7,18.4,-4.9],["S",18.4,-4.9,32.3,-5.1],["E",32.3,-5.1,32.2,6.1],["N",32.2,6.1,18.7,6.0],["E",18.7,6.0,18.6,7.5],["E",18.6,7.5,9.3,20.8],["N",9.3,20.8,-6.2,26.0]]},{"i":"B1186","n":"Temasek Hall (BLK A)","z":"4","f":4,"w":18.2,"L":[70,38,71,37],"d":0,"e":[["W",-0.1,-6.0,6.8,-19.7],["S",6.8,-19.7,37.7,-5.8],["E",37.7,-5.8,32.0,4.8],["N",32.0,4.8,13.3,-4.8],["E",13.3,-4.8,8.6,3.6],["S",8.6,3.6,10.8,4.8],["E",10.8,4.8,3.0,19.7],["N",3.0,19.7,-37.7,-0.3],["W",-37.7,-0.3,-31.2,-13.2],["S",-31.2,-13.2,-0.2,2.2],["W",-0.2,2.2,3.1,-4.3],["N",3.1,-4.3,-0.1,-6.0]]},{"i":"B1190","n":"Temasek Hall (BLK B)","z":"4","f":4,"w":15.5,"L":[38,38,40,40],"d":0,"e":[["W",-21.7,13.3,-5.4,-22.9],["S",-5.4,-22.9,21.7,-8.7],["E",21.7,-8.7,15.7,3.2],["N",15.7,3.2,2.4,-3.5],["E",2.4,-3.5,-4.0,9.0],["S",-4.0,9.0,3.9,13.0],["E",3.9,13.0,-1.3,22.9],["N",-1.3,22.9,-21.7,13.3]]},{"i":"B1188","n":"Temasek Hall (BLK C)","z":"4","f":4,"w":20.1,"L":[41,39,40,38],"d":0,"e":[["S",-21.2,-8.6,-4.8,-0.2],["W",-4.8,-0.2,4.8,-18.5],["S",4.8,-18.5,11.9,-14.8],["W",11.9,-14.8,13.3,-17.5],["S",13.3,-17.5,19.3,-14.4],["W",19.3,-14.4,20.5,-16.5],["S",20.5,-16.5,26.8,-12.9],["E",26.8,-12.9,21.8,-2.8],["N",21.8,-2.8,14.8,-6.5],["E",14.8,-6.5,2.6,18.5],["N",2.6,18.5,-26.8,2.5],["W",-26.8,2.5,-21.2,-8.6]]},{"i":"B1187","n":"Temasek Hall (BLK D)","z":"4","f":4,"w":21.8,"L":[39,46,40,45],"d":0,"e":[["S",10.8,-13.2,21.8,-7.9],["E",21.8,-7.9,16.2,3.1],["N",16.2,3.1,2.2,-4.3],["E",2.2,-4.3,-4.4,8.8],["S",-4.4,8.8,4.1,12.6],["E",4.1,12.6,-1.6,22.3],["N",-1.6,22.3,-7.2,19.4],["W",-7.2,19.4,-6.2,17.5],["N",-6.2,17.5,-11.9,14.5],["E",-11.9,14.5,-14.2,19.2],["N",-14.2,19.2,-21.8,15.4],["W",-21.8,15.4,-10.2,-7.4],["N",-10.2,-7.4,-11.9,-8.4],["W",-11.9,-8.4,-5.2,-22.3],["S",-5.2,-22.3,1.2,-19.1],["W",1.2,-19.1,2.2,-20.8],["S",2.2,-20.8,12.0,-15.7],["E",12.0,-15.7,10.8,-13.2]]},{"i":"B1189","n":"Temasek Hall (BLK E)","z":"4","f":4,"w":17.9,"L":[40,40,39,40],"d":0,"e":[["N",2.3,18.7,-14.2,10.6],["W",-14.2,10.6,-13.5,8.9],["N",-13.5,8.9,-26.3,2.2],["W",-26.3,2.2,-20.8,-8.8],["S",-20.8,-8.8,-4.5,-0.3],["W",-4.5,-0.3,5.1,-18.7],["S",5.1,-18.7,11.7,-15.6],["W",11.7,-15.6,12.9,-17.8],["S",12.9,-17.8,19.0,-14.7],["W",19.0,-14.7,20.4,-16.6],["S",20.4,-16.6,26.3,-13.2],["E",26.3,-13.2,21.6,-3.2],["N",21.6,-3.2,15.1,-6.7],["E",15.1,-6.7,2.3,18.7]]},{"i":"B1185","n":"Temasek Hall (Communal Hall)","z":"4","f":4,"w":30.1,"L":[49,51,51,52],"d":0,"e":[["W",-15.6,23.2,-16.3,12.5],["N",-16.3,12.5,-28.0,6.3],["W",-28.0,6.3,-9.5,-30.7],["S",-9.5,-30.7,28.0,-12.2],["E",28.0,-12.2,14.6,14.5],["N",14.6,14.5,7.9,11.2],["E",7.9,11.2,5.2,16.6],["S",5.2,16.6,13.2,20.6],["E",13.2,20.6,10.3,26.4],["N",10.3,26.4,1.7,21.9],["E",1.7,21.9,1.8,30.7],["N",1.8,30.7,-15.6,23.2]]},{"i":"B1088","n":"The Deck","z":"4","f":2,"w":48.7,"L":[54,47,62,54],"d":1,"e":[["W",-30.4,16.8,-22.7,-4.6],["N",-22.7,-4.6,-31.9,-15.0],["W",-31.9,-15.0,-22.4,-23.0],["W",-22.4,-23.0,-14.6,-27.4],["W",-14.6,-27.4,-4.8,-29.8],["S",-4.8,-29.8,8.4,-28.0],["S",8.4,-28.0,17.0,-24.8],["S",17.0,-24.8,23.3,-17.3],["E",23.3,-17.3,15.2,-9.0],["S",15.2,-9.0,19.7,-4.0],["S",19.7,-4.0,22.1,7.0],["S",22.1,7.0,31.9,13.2],["E",31.9,13.2,26.3,23.0],["N",26.3,23.0,19.4,18.2],["E",19.4,18.2,15.2,22.7],["E",15.2,22.7,6.0,27.7],["E",6.0,27.7,-1.5,29.8],["N",-1.5,29.8,-12.2,26.2],["N",-12.2,26.2,-20.9,20.3],["N",-20.9,20.3,-30.4,16.8]]},{"i":"B1346","n":"The Ridge","z":"4","f":8,"w":68.1,"L":[77,45,76,45],"d":1,"e":[["W",-8.9,36.4,-14.3,30.9],["N",-14.3,30.9,-19.0,35.4],["W",-19.0,35.4,-36.4,17.3],["S",-36.4,17.3,-16.1,-2.1],["E",-16.1,-2.1,-8.1,5.8],["S",-8.1,5.8,11.0,-12.6],["W",11.0,-12.6,2.7,-21.2],["S",2.7,-21.2,18.5,-36.4],["E",18.5,-36.4,35.9,-18.5],["N",35.9,-18.5,32.4,-15.1],["E",32.4,-15.1,36.4,-11.0],["N",36.4,-11.0,20.8,4.0],["E",20.8,4.0,22.8,6.0],["N",22.8,6.0,-8.9,36.4]]},{"i":"B1286","n":"Ventus","z":"4","f":3,"w":31.5,"L":[114,55,112,51],"d":0,"e":[["N",34.7,28.9,-25.6,21.8],["W",-25.6,21.8,-24.8,8.6],["S",-24.8,8.6,-15.6,10.1],["W",-15.6,10.1,-15.1,5.6],["N",-15.1,5.6,-31.7,5.5],["W",-31.7,5.5,-32.2,-7.8],["S",-32.2,-7.8,-15.3,-6.6],["W",-15.3,-6.6,-13.6,-14.7],["N",-13.6,-14.7,-35.9,-16.9],["W",-35.9,-16.9,-36.4,-28.9],["S",-36.4,-28.9,-5.4,-27.1],["E",-5.4,-27.1,1.9,-17.6],["S",1.9,-17.6,4.7,-15.7],["S",4.7,-15.7,14.3,-16.7],["E",14.3,-16.7,10.4,-6.2],["S",10.4,-6.2,24.7,-5.9],["E",24.7,-5.9,24.6,-0.5],["S",24.6,-0.5,31.6,-0.6],["E",31.6,-0.6,31.3,6.9],["N",31.3,6.9,16.8,7.1],["E",16.8,7.1,16.6,13.4],["S",16.6,13.4,36.4,15.9],["E",36.4,15.9,34.7,28.9]]},{"i":"B1195","n":"17PGP","z":"5","f":2,"w":19.9,"L":[26,18,26,18],"d":1,"e":[["W",-6.4,13.0,-14.0,4.9],["S",-14.0,4.9,4.8,-13.0],["E",4.8,-13.0,14.0,-3.0],["N",14.0,-3.0,7.6,3.1],["E",7.6,3.1,10.7,6.4],["N",10.7,6.4,6.7,10.3],["W",6.7,10.3,3.3,6.5],["N",3.3,6.5,-0.5,10.4],["W",-0.5,10.4,-1.9,9.0],["N",-1.9,9.0,-6.4,13.0]]},{"i":"B1196","n":"18PGP","z":"5","f":2,"w":4.4,"L":[16,11,16,11],"d":0,"e":[["W",-7.0,-0.7,-8.1,-4.9],["S",-8.1,-4.9,-1.5,-6.6],["E",-1.5,-6.6,-0.4,-2.4],["S",-0.4,-2.4,6.8,-4.3],["E",6.8,-4.3,8.6,2.6],["N",8.6,2.6,-6.9,6.6],["W",-6.9,6.6,-8.6,-0.3],["S",-8.6,-0.3,-7.0,-0.7]]},{"i":"B1247","n":"2PGP","z":"5","f":2,"w":6.7,"L":[15,17,15,17],"d":0,"e":[["E",7.4,-7.5,7.5,3.4],["N",7.5,3.4,4.9,3.4],["E",4.9,3.4,4.9,7.5],["N",4.9,7.5,-0.7,7.5],["W",-0.7,7.5,-0.8,3.2],["N",-0.8,3.2,-7.5,3.3],["W",-7.5,3.3,-7.5,-4.2],["S",-7.5,-4.2,-4.3,-4.2],["W",-4.3,-4.2,-4.3,-7.4],["S",-4.3,-7.4,-1.5,-7.4],["E",-1.5,-7.4,-1.5,-5.7],["S",-1.5,-5.7,3.5,-5.7],["W",3.5,-5.7,3.5,-7.5],["S",3.5,-7.5,7.4,-7.5]]},{"i":"B1248","n":"3PGP","z":"5","f":2,"w":7.9,"L":[22,13,22,13],"d":0,"e":[["S",-10.3,-7.0,-3.1,-5.9],["E",-3.1,-5.9,-3.3,-4.7],["S",-3.3,-4.7,0.9,-4.1],["W",0.9,-4.1,1.0,-4.9],["S",1.0,-4.9,11.5,-3.4],["E",11.5,-3.4,10.2,5.3],["N",10.2,5.3,1.1,3.9],["E",1.1,3.9,0.6,7.0],["N",0.6,7.0,-10.2,5.4],["W",-10.2,5.4,-9.6,1.1],["N",-9.6,1.1,-11.5,0.8],["W",-11.5,0.8,-10.3,-7.0]]},{"i":"B1249","n":"4PGP","z":"5","f":2,"w":42.7,"L":[16,12,16,12],"d":0,"e":[["E",5.3,-9.3,7.4,-5.8],["N",7.4,-5.8,5.3,-4.5],["E",5.3,-4.5,7.9,-0.9],["N",7.9,-0.9,6.0,0.3],["E",6.0,0.3,7.9,3.2],["N",7.9,3.2,-1.3,9.3],["W",-1.3,9.3,-7.9,0.6],["S",-7.9,0.6,-6.1,-0.8],["W",-6.1,-0.8,-6.9,-2.2],["S",-6.9,-2.2,5.3,-9.3]]},{"i":"B1219","n":"King Edward VII Hall (BLK A)","z":"5","f":4,"w":14.9,"L":[63,18,63,18],"d":0,"e":[["S",-13.3,-9.0,31.3,-8.9],["E",31.3,-8.9,31.3,-1.2],["N",31.3,-1.2,-6.8,-1.3],["E",-6.8,-1.3,-6.8,2.9],["N",-6.8,2.9,-12.9,2.9],["E",-12.9,2.9,-12.9,9.0],["N",-12.9,9.0,-31.3,9.0],["W",-31.3,9.0,-31.3,-1.3],["S",-31.3,-1.3,-13.3,-1.3],["W",-13.3,-1.3,-13.3,-9.0]]},{"i":"B1230","n":"King Edward VII Hall (BLK B1)","z":"5","f":4,"w":14.4,"L":[37,7,37,7],"d":1,"e":[["E",10.9,-15.4,15.8,-10.4],["N",15.8,-10.4,-10.9,15.4],["W",-10.9,15.4,-15.8,10.4],["S",-15.8,10.4,10.9,-15.4]]},{"i":"B1231","n":"King Edward VII Hall (BLK B2)","z":"5","f":4,"w":15.6,"L":[58,8,58,8],"d":0,"e":[["W",-28.8,3.8,-28.8,-3.8],["S",-28.8,-3.8,28.8,-3.8],["E",28.8,-3.8,28.8,3.8],["N",28.8,3.8,-28.8,3.8]]},{"i":"B1232","n":"King Edward VII Hall (BLK C1)","z":"5","f":4,"w":14.9,"L":[7,47,7,47],"d":1,"e":[["W",-18.7,14.4,13.9,-19.0],["S",13.9,-19.0,18.7,-14.4],["E",18.7,-14.4,-13.9,19.0],["N",-13.9,19.0,-18.7,14.4]]},{"i":"B1228","n":"King Edward VII Hall (BLK C2)","z":"5","f":4,"w":16.1,"L":[52,7,52,7],"d":0,"e":[["S",-25.7,-3.6,25.8,-3.4],["E",25.8,-3.4,25.7,3.6],["N",25.7,3.6,-25.8,3.4],["W",-25.8,3.4,-25.7,-3.6]]},{"i":"B1227","n":"King Edward VII Hall (BLK D)","z":"5","f":4,"w":15.9,"L":[43,9,43,9],"d":1,"e":[["S",-18.3,11.8,12.2,-18.0],["E",12.2,-18.0,18.3,-11.8],["N",18.3,-11.8,-12.2,18.0],["W",-12.2,18.0,-18.3,11.8]]},{"i":"B1223","n":"King Edward VII Hall (BLK E1)","z":"5","f":4,"w":15.2,"L":[62,8,62,8],"d":0,"e":[["S",-29.4,10.6,25.6,-17.9],["E",25.6,-17.9,29.4,-10.6],["N",29.4,-10.6,-25.6,17.9],["W",-25.6,17.9,-29.4,10.6]]},{"i":"B1224","n":"King Edward VII Hall (BLK E2)","z":"5","f":4,"w":15.2,"L":[8,36,8,36],"d":0,"e":[["W",-9.2,16.1,2.0,-18.4],["S",2.0,-18.4,9.2,-16.1],["E",9.2,-16.1,-2.0,18.4],["N",-2.0,18.4,-9.2,16.1]]},{"i":"B1221","n":"King Edward VII Hall (BLK F1)","z":"5","f":4,"w":16.3,"L":[68,8,68,8],"d":0,"e":[["S",-32.6,11.4,29.0,-18.7],["E",29.0,-18.7,32.6,-11.4],["N",32.6,-11.4,-29.0,18.7],["W",-29.0,18.7,-32.6,11.4]]},{"i":"B1226","n":"King Edward VII Hall (BLK F2)","z":"5","f":4,"w":19.2,"L":[9,56,9,56],"d":0,"e":[["W",-13.1,25.4,4.5,-28.2],["S",4.5,-28.2,13.1,-25.4],["E",13.1,-25.4,-4.5,28.2],["N",-4.5,28.2,-13.1,25.4]]},{"i":"B1225","n":"King Edward VII Hall (BLK G1)","z":"5","f":4,"w":15.6,"L":[53,8,53,8],"d":0,"e":[["S",-25.7,7.8,22.1,-15.2],["E",22.1,-15.2,25.7,-7.8],["N",25.7,-7.8,-22.1,15.2],["W",-22.1,15.2,-25.7,7.8]]},{"i":"B1222","n":"King Edward VII Hall (BLK G2)","z":"5","f":4,"w":20.5,"L":[8,49,8,49],"d":0,"e":[["S",3.6,-24.7,11.5,-22.2],["E",11.5,-22.2,-3.6,24.7],["N",-3.6,24.7,-11.5,22.2],["W",-11.5,22.2,3.6,-24.7]]},{"i":"B1229","n":"King Edward VII Hall (BLK H)","z":"5","f":4,"w":13.2,"L":[42,8,42,8],"d":0,"e":[["S",-20.6,5.8,17.3,-12.6],["E",17.3,-12.6,20.6,-5.8],["N",20.6,-5.8,-17.3,12.6],["W",-17.3,12.6,-20.6,5.8]]},{"i":"B1220","n":"King Edward VII Hall (Communal Hall)","z":"5","f":3,"w":35.2,"L":[58,81,58,81],"d":0,"e":[["N",-1.6,24.8,-23.9,17.5],["W",-23.9,17.5,-17.1,-3.0],["N",-17.1,-3.0,-24.1,-5.3],["W",-24.1,-5.3,-11.0,-44.7],["S",-11.0,-44.7,24.1,-33.2],["E",24.1,-33.2,18.1,-15.2],["N",18.1,-15.2,2.5,-20.3],["E",2.5,-20.3,-4.2,-0.1],["S",-4.2,-0.1,11.0,4.8],["E",11.0,4.8,4.1,25.7],["S",4.1,25.7,8.8,27.3],["E",8.8,27.3,3.1,44.7],["N",3.1,44.7,-7.1,41.4],["W",-7.1,41.4,-1.6,24.8]]},{"i":"B1213","n":"PGP Residences (BLK 1)","z":"5","f":8,"w":25.7,"L":[18,25,18,25],"d":1,"e":[["N",-1.5,-1.2,-8.9,-7.7],["W",-8.9,-7.7,-2.4,-15.2],["S",-2.4,-15.2,11.2,-3.5],["E",11.2,-3.5,-5.1,15.2],["N",-5.1,15.2,-11.2,9.9],["W",-11.2,9.9,-1.5,-1.2]]},{"i":"B1205","n":"PGP Residences (BLK 10)","z":"5","f":9,"w":19.3,"L":[10,38,10,38],"d":1,"e":[["S",8.6,-17.6,15.9,-11.6],["E",15.9,-11.6,-8.6,17.6],["N",-8.6,17.6,-15.9,11.6],["W",-15.9,11.6,8.6,-17.6]]},{"i":"B1209","n":"PGP Residences (BLK 11)","z":"5","f":10,"w":20.0,"L":[9,30,9,30],"d":0,"e":[["W",-9.8,12.6,1.4,-15.8],["S",1.4,-15.8,9.8,-12.5],["E",9.8,-12.5,-1.4,15.8],["N",-1.4,15.8,-9.8,12.6]]},{"i":"B1204","n":"PGP Residences (BLK 12)","z":"5","f":10,"w":19.5,"L":[10,33,10,33],"d":0,"e":[["W",-8.8,15.0,-0.9,-17.3],["S",-0.9,-17.3,8.8,-15.0],["E",8.8,-15.0,0.9,17.3],["N",0.9,17.3,-8.8,15.0]]},{"i":"B1198","n":"PGP Residences (BLK 13)","z":"5","f":13,"w":17.8,"L":[20,30,20,30],"d":0,"e":[["E",3.3,8.6,0.8,16.0],["N",0.8,16.0,-10.0,12.4],["W",-10.0,12.4,-7.4,4.9],["N",-7.4,4.9,-11.5,3.5],["W",-11.5,3.5,-7.0,-9.9],["S",-7.0,-9.9,-3.0,-8.6],["W",-3.0,-8.6,-0.5,-16.0],["S",-0.5,-16.0,10.3,-12.4],["E",10.3,-12.4,7.7,-4.9],["S",7.7,-4.9,11.5,-3.6],["E",11.5,-3.6,7.0,9.8],["N",7.0,9.8,3.3,8.6]]},{"i":"B1199","n":"PGP Residences (BLK 14)","z":"5","f":13,"w":21.2,"L":[30,20,30,20],"d":0,"e":[["N",-4.1,8.4,-11.2,11.6],["W",-11.2,11.6,-16.0,1.4],["S",-16.0,1.4,-8.8,-2.0],["W",-8.8,-2.0,-10.6,-5.9],["S",-10.6,-5.9,2.3,-11.8],["E",2.3,-11.8,4.1,-8.0],["S",4.1,-8.0,11.2,-11.3],["E",11.2,-11.3,16.0,-1.1],["N",16.0,-1.1,8.8,2.3],["E",8.8,2.3,10.5,5.9],["N",10.5,5.9,-2.5,11.8],["W",-2.5,11.8,-4.1,8.4]]},{"i":"B1197","n":"PGP Residences (BLK 15-17)","z":"5","f":8,"w":42.6,"L":[80,46,78,45],"d":0,"e":[["W",-2.8,1.1,3.5,-17.3],["S",3.5,-17.3,45.8,-4.2],["E",45.8,-4.2,42.8,5.3],["N",42.8,5.3,9.3,-5.0],["E",9.3,-5.0,2.8,14.7],["N",2.8,14.7,-31.3,3.6],["E",-31.3,3.6,-38.0,17.3],["N",-38.0,17.3,-45.8,13.5],["W",-45.8,13.5,-34.8,-9.2],["S",-34.8,-9.2,-2.8,1.1]]},{"i":"B1201","n":"PGP Residences (BLK 18, 19)","z":"5","f":8,"w":38.3,"L":[43,46,42,45],"d":0,"e":[["W",-25.2,1.3,-13.0,-20.6],["S",-13.0,-20.6,19.2,-8.2],["E",19.2,-8.2,18.0,-5.1],["S",18.0,-5.1,25.2,-2.4],["E",25.2,-2.4,16.3,20.6],["N",16.3,20.6,8.1,17.5],["W",8.1,17.5,14.1,2.1],["N",14.1,2.1,2.3,-2.4],["W",2.3,-2.4,3.4,-5.4],["N",3.4,-5.4,-9.3,-10.3],["E",-9.3,-10.3,-18.0,5.3],["N",-18.0,5.3,-25.2,1.3]]},{"i":"B1211","n":"PGP Residences (BLK 2)","z":"5","f":8,"w":25.1,"L":[18,25,18,25],"d":1,"e":[["N",-1.5,-1.2,-8.9,-7.7],["W",-8.9,-7.7,-2.4,-15.2],["S",-2.4,-15.2,11.2,-3.5],["E",11.2,-3.5,-5.1,15.2],["N",-5.1,15.2,-11.2,9.9],["W",-11.2,9.9,-1.5,-1.2]]},{"i":"B1200","n":"PGP Residences (BLK 20, 21)","z":"5","f":8,"w":37.7,"L":[46,42,45,43],"d":1,"e":[["N",-11.2,-7.0,-27.5,3.0],["W",-27.5,3.0,-32.2,-4.6],["S",-32.2,-4.6,-9.4,-18.2],["E",-9.4,-18.2,12.6,6.5],["S",12.6,6.5,26.6,-5.7],["E",26.6,-5.7,32.2,0.6],["N",32.2,0.6,11.6,18.2],["W",11.6,18.2,-11.2,-7.0]]},{"i":"B1202","n":"PGP Residences (BLK 22-25)","z":"5","f":8,"w":40.0,"L":[74,92,76,95],"d":0,"e":[["N",15.7,-25.0,-1.0,-22.8],["W",-1.0,-22.8,-2.2,-31.7],["S",-2.2,-31.7,23.9,-34.9],["E",23.9,-34.9,32.7,22.0],["N",32.7,22.0,5.3,34.9],["W",5.3,34.9,-11.6,4.1],["N",-11.6,4.1,-29.1,10.7],["W",-29.1,10.7,-32.7,1.2],["S",-32.7,1.2,-7.9,-8.1],["E",-7.9,-8.1,9.2,22.0],["S",9.2,22.0,22.8,15.7],["W",22.8,15.7,20.0,-0.5],["N",20.0,-0.5,11.8,0.6],["W",11.8,0.6,10.5,-8.6],["S",10.5,-8.6,18.4,-9.7],["W",18.4,-9.7,15.7,-25.0]]},{"i":"B1214","n":"PGP Residences (BLK 26)","z":"5","f":8,"w":28.1,"L":[20,26,20,26],"d":0,"e":[["N",7.0,16.1,-10.8,7.9],["W",-10.8,7.9,0.3,-16.1],["S",0.3,-16.1,8.2,-12.4],["E",8.2,-12.4,0.9,3.4],["S",0.9,3.4,10.8,7.9],["E",10.8,7.9,7.0,16.1]]},{"i":"B1216","n":"PGP Residences (BLK 27, 28)","z":"5","f":8,"w":30.1,"L":[41,43,42,42],"d":0,"e":[["E",13.0,-18.9,-0.0,12.6],["S",-0.0,12.6,14.6,20.0],["E",14.6,20.0,10.6,27.8],["N",10.6,27.8,-10.3,17.2],["W",-10.3,17.2,2.2,-12.9],["N",2.2,-12.9,-14.6,-19.1],["W",-14.6,-19.1,-11.4,-27.8],["S",-11.4,-27.8,13.0,-18.9]]},{"i":"B1217","n":"PGP Residences (BLK 29, 30)","z":"5","f":8,"w":27.5,"L":[25,57,24,58],"d":0,"e":[["W",-17.4,27.7,5.6,-16.4],["N",5.6,-16.4,-7.3,-25.2],["W",-7.3,-25.2,-2.7,-32.0],["S",-2.7,-32.0,17.4,-18.2],["E",17.4,-18.2,-9.0,32.0],["N",-9.0,32.0,-17.4,27.7]]},{"i":"B1212","n":"PGP Residences (BLK 3)","z":"5","f":8,"w":24.7,"L":[18,25,18,25],"d":1,"e":[["N",-1.5,-1.2,-8.9,-7.7],["W",-8.9,-7.7,-2.4,-15.2],["S",-2.4,-15.2,11.2,-3.5],["E",11.2,-3.5,-5.1,15.2],["N",-5.1,15.2,-11.2,9.9],["W",-11.2,9.9,-1.5,-1.2]]},{"i":"B1215","n":"PGP Residences (BLK 4)","z":"5","f":8,"w":20.4,"L":[18,25,18,25],"d":1,"e":[["N",-1.5,-1.2,-8.9,-7.7],["W",-8.9,-7.7,-2.4,-15.2],["S",-2.4,-15.2,11.2,-3.5],["E",11.2,-3.5,-5.1,15.2],["N",-5.1,15.2,-11.2,9.9],["W",-11.2,9.9,-1.5,-1.2]]},{"i":"B1206","n":"PGP Residences (BLK 5)","z":"5","f":7,"w":30.5,"L":[18,10,18,10],"d":1,"e":[["S",-4.0,-9.4,10.2,1.6],["E",10.2,1.6,4.0,9.4],["N",4.0,9.4,-10.2,-1.6],["W",-10.2,-1.6,-4.0,-9.4]]},{"i":"B1208","n":"PGP Residences (BLK 6)","z":"5","f":8,"w":20.8,"L":[29,10,29,10],"d":0,"e":[["S",-11.8,-9.8,15.4,0.3],["E",15.4,0.3,11.8,9.8],["N",11.8,9.8,-15.4,-0.3],["W",-15.4,-0.3,-11.8,-9.8]]},{"i":"B1203","n":"PGP Residences (BLK 7)","z":"5","f":8,"w":20.0,"L":[30,10,30,10],"d":0,"e":[["S",-14.7,-5.3,15.0,-4.5],["E",15.0,-4.5,14.7,5.3],["N",14.7,5.3,-15.0,4.5],["W",-15.0,4.5,-14.7,-5.3]]},{"i":"B1207","n":"PGP Residences (BLK 8)","z":"5","f":8,"w":22.5,"L":[35,10,35,10],"d":0,"e":[["S",-18.3,-0.3,15.4,-9.9],["E",15.4,-9.9,18.3,0.3],["N",18.3,0.3,-15.4,9.9],["W",-15.4,9.9,-18.3,-0.3]]},{"i":"B1210","n":"PGP Residences (BLK 9)","z":"5","f":9,"w":21.3,"L":[28,11,28,11],"d":0,"e":[["S",-14.9,3.4,8.8,-12.4],["E",8.8,-12.4,14.9,-3.4],["N",14.9,-3.4,-8.8,12.4],["W",-8.8,12.4,-14.9,3.4]]},{"i":"B1322","n":"PGP Residences (Dining Hall)","z":"5","f":3,"w":41.6,"L":[49,10,52,9],"d":0,"e":[["W",-20.7,12.6,-25.3,5.1],["S",-25.3,5.1,-7.9,-4.2],["S",-7.9,-4.2,11.6,-10.2],["S",11.6,-10.2,22.9,-12.6],["E",22.9,-12.6,25.3,-2.8],["N",25.3,-2.8,6.8,1.1],["N",6.8,1.1,-20.7,12.6]]},{"i":"B1218","n":"PGP Residences (Gym)","z":"5","f":3,"w":53.3,"L":[11,10,10,8],"d":1,"e":[["N",-3.9,4.9,-6.2,1.3],["N",-6.2,1.3,-6.3,-0.9],["W",-6.3,-0.9,-4.4,-4.6],["W",-4.4,-4.6,-0.9,-6.3],["S",-0.9,-6.3,1.1,-6.2],["S",1.1,-6.2,4.6,-4.4],["S",4.6,-4.4,6.3,-0.9],["E",6.3,-0.9,6.2,1.1],["E",6.2,1.1,4.2,4.7],["E",4.2,4.7,0.2,6.3],["N",0.2,6.3,-3.9,4.9]]},{"i":"B1240","n":"PGP Residences (Mini Mart)","z":"5","f":1,"w":27.1,"L":[20,32,20,32],"d":0,"e":[["W",0.8,16.3,0.3,-7.0],["N",0.3,-7.0,-10.4,-6.8],["W",-10.4,-6.8,-10.7,-15.8],["S",-10.7,-15.8,9.8,-16.3],["E",9.8,-16.3,10.7,16.0],["N",10.7,16.0,0.8,16.3]]},{"i":"B1237","n":"Kuok Foundation House","z":"6","f":8,"w":6.4,"L":[34,41,34,42],"d":0,"e":[["W",-23.8,11.6,-17.5,-1.8],["S",-17.5,-1.8,-8.0,2.7],["W",-8.0,2.7,3.6,-21.3],["S",3.6,-21.3,15.5,-16.4],["E",15.5,-16.4,14.2,-13.7],["S",14.2,-13.7,23.8,-9.1],["E",23.8,-9.1,18.0,3.4],["N",18.0,3.4,8.5,-0.7],["E",8.5,-0.7,-2.4,21.3],["N",-2.4,21.3,-23.8,11.6]]},{"i":"B1020","n":"Lee Kong Chian Natural History Museum","z":"6","f":7,"w":2.2,"L":[75,53,74,55],"d":0,"e":[["W",-26.0,37.5,-44.5,-14.7],["S",-44.5,-14.7,26.2,-37.5],["E",26.2,-37.5,44.5,12.0],["N",44.5,12.0,-26.0,37.5]]},{"i":"B1179","n":"Multi-purpose Sports Hall 1-4","z":"6","f":3,"w":22.5,"L":[88,45,87,45],"d":0,"e":[["E",37.9,-26.8,48.8,1.5],["N",48.8,1.5,-33.7,31.3],["W",-33.7,31.3,-48.8,-11.0],["S",-48.8,-11.0,7.9,-31.3],["E",7.9,-31.3,12.9,-17.7],["S",12.9,-17.7,37.9,-26.8]]},{"i":"B1022","n":"Multi-purpose Sports Hall 5","z":"6","f":2,"w":36.4,"L":[57,31,54,33],"d":0,"e":[["N",31.1,4.0,-21.8,24.6],["W",-21.8,24.6,-26.1,13.6],["W",-26.1,13.6,-31.1,-6.6],["S",-31.1,-6.6,19.6,-24.6],["E",19.6,-24.6,31.1,4.0]]},{"i":"B1178","n":"Multi-purpose Sports Hall 6","z":"6","f":2,"w":6.2,"L":[56,55,64,41],"d":0,"e":[["E",33.0,-1.2,38.0,19.0],["E",38.0,19.0,5.4,30.6],["W",5.4,30.6,11.3,19.9],["N",11.3,19.9,-38.0,-6.0],["W",-38.0,-6.0,-23.6,-30.6],["S",-23.6,-30.6,-19.0,-29.4],["S",-19.0,-29.4,33.0,-1.2]]},{"i":"B1235","n":"Raffles Hall (BLK 2)","z":"6","f":3,"w":41.2,"L":[30,42,29,41],"d":0,"e":[["N",-7.6,21.4,-19.8,15.8],["W",-19.8,15.8,-2.8,-21.4],["S",-2.8,-21.4,8.9,-16.5],["E",8.9,-16.5,7.3,-12.5],["S",7.3,-12.5,19.8,-7.5],["E",19.8,-7.5,15.6,2.2],["N",15.6,2.2,0.6,-4.8],["E",0.6,-4.8,-4.7,7.7],["S",-4.7,7.7,-1.7,8.9],["E",-1.7,8.9,-7.6,21.4]]},{"i":"B1233","n":"Raffles Hall (BLK 3 & 5)","z":"6","f":3,"w":41.2,"L":[92,109,92,106],"d":0,"e":[["W",-40.7,22.4,-35.7,11.1],["S",-35.7,11.1,-32.4,12.4],["W",-32.4,12.4,-27.8,2.9],["S",-27.8,2.9,-19.3,6.4],["E",-19.3,6.4,-25.6,20.2],["S",-25.6,20.2,-12.2,25.4],["W",-12.2,25.4,-1.7,2.9],["S",-1.7,2.9,1.0,4.0],["W",1.0,4.0,4.6,-3.4],["S",4.6,-3.4,16.5,1.8],["W",16.5,1.8,21.1,-7.9],["N",21.1,-7.9,-7.1,-21.0],["W",-7.1,-21.0,-2.5,-32.4],["S",-2.5,-32.4,5.4,-29.9],["W",5.4,-29.9,10.0,-39.7],["S",10.0,-39.7,18.5,-35.9],["E",18.5,-35.9,12.6,-22.2],["S",12.6,-22.2,25.2,-16.6],["W",25.2,-16.6,31.6,-31.1],["S",31.6,-31.1,40.7,-27.1],["E",40.7,-27.1,35.3,-15.8],["S",35.3,-15.8,38.3,-14.1],["E",38.3,-14.1,33.0,-2.5],["N",33.0,-2.5,27.8,-4.7],["E",27.8,-4.7,20.3,12.0],["N",20.3,12.0,6.6,6.6],["E",6.6,6.6,-2.9,26.9],["S",-2.9,26.9,1.0,28.0],["E",1.0,28.0,-4.4,39.7],["N",-4.4,39.7,-40.7,22.4]]},{"i":"B1234","n":"Raffles Hall (BLK 4)","z":"6","f":3,"w":41.2,"L":[31,41,30,41],"d":0,"e":[["W",-20.0,15.6,-2.2,-21.7],["S",-2.2,-21.7,10.2,-15.8],["E",10.2,-15.8,8.6,-11.9],["S",8.6,-11.9,20.0,-6.4],["E",20.0,-6.4,16.4,2.2],["N",16.4,2.2,1.0,-4.6],["E",1.0,-4.6,-4.7,8.3],["S",-4.7,8.3,-1.5,9.7],["E",-1.5,9.7,-6.9,21.7],["N",-6.9,21.7,-20.0,15.6]]},{"i":"B1236","n":"Raffles Hall (BLK 6)","z":"6","f":3,"w":61.9,"L":[34,41,34,41],"d":0,"e":[["W",-20.0,15.0,-3.1,-22.2],["S",-3.1,-22.2,9.4,-16.6],["E",9.4,-16.6,7.9,-13.2],["S",7.9,-13.2,20.0,-7.8],["E",20.0,-7.8,15.9,1.2],["N",15.9,1.2,0.4,-5.7],["E",0.4,-5.7,-5.1,6.4],["S",-5.1,6.4,1.7,9.4],["E",1.7,9.4,-4.1,22.2],["N",-4.1,22.2,-20.0,15.0]]},{"i":"B1238","n":"Raffles Hall (Communal Hall)","z":"6","f":2,"w":62.2,"L":[60,65,61,67],"d":0,"e":[["N",-3.9,34.8,-17.3,28.9],["W",-17.3,28.9,-14.5,23.3],["N",-14.5,23.3,-26.0,18.3],["W",-26.0,18.3,-19.2,3.8],["N",-19.2,3.8,-28.9,-0.8],["W",-28.9,-0.8,-23.8,-11.9],["S",-23.8,-11.9,-9.3,-4.9],["W",-9.3,-4.9,3.5,-34.8],["S",3.5,-34.8,28.9,-22.6],["E",28.9,-22.6,19.3,-1.5],["N",19.3,-1.5,9.5,-6.5],["E",9.5,-6.5,5.4,2.3],["S",5.4,2.3,15.4,7.4],["E",15.4,7.4,10.7,17.6],["N",10.7,17.6,0.5,13.3],["E",0.5,13.3,-6.4,26.7],["S",-6.4,26.7,-1.3,29.1],["E",-1.3,29.1,-3.9,34.8]]},{"i":"B1300","n":"Singapore Wind Tunnel Facility","z":"6","f":5,"w":12.2,"L":[48,85,48,85],"d":0,"e":[["N",34.7,24.7,25.5,28.1],["W",25.5,28.1,20.8,15.6],["N",20.8,15.6,14.4,17.9],["E",14.4,17.9,19.4,31.3],["N",19.4,31.3,-9.8,41.9],["W",-9.8,41.9,-34.7,-25.6],["S",-34.7,-25.6,10.1,-41.9],["E",10.1,-41.9,34.7,24.7]]},{"i":"B1006","n":"University Cultural Center & NUS Museum","z":"6","f":4,"w":47.2,"L":[161,177,185,160],"d":0,"e":[["W",-96.4,53.8,-100.0,46.9],["W",-100.0,46.9,-98.8,40.1],["W",-98.8,40.1,-86.7,4.8],["W",-86.7,4.8,-91.4,-10.3],["S",-91.4,-10.3,-79.7,-14.2],["S",-79.7,-14.2,-70.0,-24.1],["S",-70.0,-24.1,-55.5,-31.7],["S",-55.5,-31.7,-44.5,-35.7],["S",-44.5,-35.7,-26.6,-39.1],["S",-26.6,-39.1,-16.8,-37.6],["S",-16.8,-37.6,-5.3,-40.6],["S",-5.3,-40.6,45.3,-58.8],["S",45.3,-58.8,82.2,-57.5],["E",82.2,-57.5,100.0,-5.8],["N",100.0,-5.8,93.3,-3.5],["W",93.3,-3.5,80.0,-42.4],["N",80.0,-42.4,65.0,-42.8],["E",65.0,-42.8,61.2,-26.9],["N",61.2,-26.9,45.1,-21.5],["E",45.1,-21.5,46.6,-16.7],["N",46.6,-16.7,31.1,-10.9],["E",31.1,-10.9,42.4,23.1],["N",42.4,23.1,2.6,38.6],["W",2.6,38.6,0.9,35.5],["N",0.9,35.5,-19.3,43.3],["W",-19.3,43.3,-34.6,-2.0],["N",-34.6,-2.0,-51.0,2.5],["E",-51.0,2.5,-66.1,40.6],["N",-66.1,40.6,-75.3,36.1],["E",-75.3,36.1,-83.5,58.8],["N",-83.5,58.8,-96.4,53.8]]},{"i":"B1301","n":"University Sports Centre","z":"6","f":3,"w":10.0,"L":[68,96,70,96],"d":0,"e":[["S",-20.8,-54.3,-5.7,-42.1],["E",-5.7,-42.1,-6.4,-32.4],["S",-6.4,-32.4,31.6,-28.9],["E",31.6,-28.9,26.7,33.4],["N",26.7,33.4,14.2,36.8],["N",14.2,36.8,9.7,35.6],["N",9.7,35.6,-2.1,34.3],["E",-2.1,34.3,-3.0,42.1],["N",-3.0,42.1,-16.0,38.5],["E",-16.0,38.5,-17.6,54.3],["N",-17.6,54.3,-27.7,43.1],["W",-27.7,43.1,-26.7,24.0],["N",-26.7,24.0,-31.6,23.2],["W",-31.6,23.2,-30.1,7.2],["S",-30.1,7.2,-23.1,7.3],["W",-23.1,7.3,-22.9,-12.3],["N",-22.9,-12.3,-27.3,-12.9],["W",-27.3,-12.9,-26.3,-33.2],["S",-26.3,-33.2,-21.3,-32.9],["W",-21.3,-32.9,-20.8,-54.3]]},{"i":"B1352","n":"Valour House","z":"6","f":19,"w":39.2,"L":[90,24,89,31],"d":0,"e":[["E",19.6,-4.4,19.3,0.9],["S",19.3,0.9,22.9,-0.1],["E",22.9,-0.1,25.7,9.4],["N",25.7,9.4,-22.9,23.6],["W",-22.9,23.6,-25.7,14.0],["S",-25.7,14.0,6.6,4.6],["W",6.6,4.6,4.6,2.4],["W",4.6,2.4,4.3,-1.1],["W",4.3,-1.1,7.5,-5.9],["S",7.5,-5.9,9.8,-6.8],["N",9.8,-6.8,-24.2,-15.3],["W",-24.2,-15.3,-22.1,-23.6],["S",-22.1,-23.6,25.6,-11.6],["E",25.6,-11.6,23.5,-3.4],["N",23.5,-3.4,19.6,-4.4]]},{"i":"B1026","n":"Yong Siew Toh Conservatory of Music","z":"6","f":4,"w":30.5,"L":[151,96,99,115],"d":0,"e":[["W",-73.4,31.8,-64.7,5.8],["S",-64.7,5.8,-29.7,19.1],["W",-29.7,19.1,-29.7,4.8],["S",-29.7,4.8,-23.8,4.8],["S",-23.8,4.8,-18.3,5.8],["S",-18.3,5.8,-14.4,7.5],["E",-14.4,7.5,-19.1,20.6],["S",-19.1,20.6,-7.9,22.6],["W",-7.9,22.6,13.3,-47.2],["S",13.3,-47.2,47.4,-46.4],["E",47.4,-46.4,73.4,31.8],["N",73.4,31.8,50.5,40.8],["N",50.5,40.8,25.2,46.0],["N",25.2,46.0,0.6,47.2],["N",0.6,47.2,-16.4,46.6],["N",-16.4,46.6,-32.8,44.0],["N",-32.8,44.0,-73.4,31.8]]},{"i":"B1033","n":"Acacia Residential College (ARC)","z":"7","f":21,"w":21.1,"L":[85,26,85,26],"d":0,"e":[["S",-21.6,-7.7,-8.4,-1.9],["W",-8.4,-1.9,-6.7,-5.7],["N",-6.7,-5.7,-19.9,-11.1],["W",-19.9,-11.1,-15.3,-21.1],["S",-15.3,-21.1,26.3,-3.0],["E",26.3,-3.0,22.0,6.4],["N",22.0,6.4,4.1,-1.7],["E",4.1,-1.7,3.1,0.5],["N",3.1,0.5,-1.3,-1.4],["E",-1.3,-1.4,-2.3,0.7],["S",-2.3,0.7,20.3,10.8],["E",20.3,10.8,15.6,21.1],["N",15.6,21.1,-26.3,2.4],["W",-26.3,2.4,-21.6,-7.7]]},{"i":"B1041","n":"ARC Learn Lobe","z":"7","f":3,"w":30.6,"L":[19,24,19,24],"d":0,"e":[["N",6.2,13.9,-12.3,9.1],["W",-12.3,9.1,-6.2,-13.9],["S",-6.2,-13.9,12.3,-9.1],["E",12.3,-9.1,6.2,13.9]]},{"i":"B1036","n":"CAPT & R4 Dining Hall","z":"7","f":1,"w":13.2,"L":[42,33,42,33],"d":0,"e":[["S",-24.1,-12.3,17.5,-20.2],["E",17.5,-20.2,24.1,12.1],["N",24.1,12.1,-17.6,20.2],["W",-17.6,20.2,-24.1,-12.3]]},{"i":"B1304","n":"Cendana Wing-1","z":"7","f":3,"w":6.9,"L":[48,42,48,41],"d":0,"e":[["W",-19.6,21.3,-22.0,2.6],["N",-22.0,2.6,-23.6,2.8],["W",-23.6,2.8,-26.4,-19.6],["S",-26.4,-19.6,-12.5,-21.3],["E",-12.5,-21.3,-11.8,-16.0],["S",-11.8,-16.0,14.3,-19.3],["E",14.3,-19.3,17.7,8.1],["S",17.7,8.1,20.7,7.7],["E",20.7,7.7,20.9,9.2],["S",20.9,9.2,26.0,8.6],["E",26.0,8.6,26.4,15.6],["N",26.4,15.6,-19.6,21.3]]},{"i":"B1319","n":"Cendana Wing-2","z":"7","f":3,"w":17.1,"L":[46,10,46,11],"d":0,"e":[["N",23.5,2.7,-22.2,7.5],["W",-22.2,7.5,-23.5,-3.0],["S",-23.5,-3.0,22.1,-7.5],["E",22.1,-7.5,23.5,2.7]]},{"i":"B1318","n":"Cendana Wing-3","z":"7","f":2,"w":19.0,"L":[11,27,11,27],"d":0,"e":[["S",-6.8,-12.9,4.1,-14.0],["E",4.1,-14.0,6.8,12.8],["N",6.8,12.8,-4.0,14.0],["W",-4.0,14.0,-6.8,-12.9]]},{"i":"B1038","n":"Chua Thian Poh Hall","z":"7","f":3,"w":22.2,"L":[30,28,30,28],"d":0,"e":[["W",-16.6,11.6,-12.6,-15.7],["S",-12.6,-15.7,16.6,-11.6],["E",16.6,-11.6,12.6,15.7],["N",12.6,15.7,-16.6,11.6]]},{"i":"B1035","n":"College of Alice & Peter Tan (CAPT) Multi-Purpose Hall","z":"7","f":4,"w":6.1,"L":[50,22,50,22],"d":0,"e":[["S",-23.9,-13.7,26.3,-8.2],["E",26.3,-8.2,23.9,13.7],["N",23.9,13.7,-26.3,8.2],["W",-26.3,8.2,-23.9,-13.7]]},{"i":"B1034","n":"College of Alice&Peter Tan","z":"7","f":19,"w":14.7,"L":[70,20,70,20],"d":0,"e":[["E",29.0,-1.7,30.3,4.7],["N",30.3,4.7,-26.8,14.7],["W",-26.8,14.7,-28.2,8.2],["S",-28.2,8.2,-22.9,7.2],["W",-22.9,7.2,-24.2,1.0],["N",-24.2,1.0,-29.2,2.0],["W",-29.2,2.0,-30.3,-4.4],["S",-30.3,-4.4,26.5,-14.7],["E",26.5,-14.7,27.9,-8.0],["N",27.9,-8.0,20.8,-6.9],["E",20.8,-6.9,22.2,-0.5],["S",22.2,-0.5,29.0,-1.7]]},{"i":"B1251","n":"Create","z":"7","f":7,"w":31.8,"L":[237,99,236,92],"d":0,"e":[["S",5.1,3.7,24.8,13.2],["E",24.8,13.2,24.0,15.0],["S",24.0,15.0,26.0,16.0],["E",26.0,16.0,20.9,26.5],["N",20.9,26.5,16.2,24.3],["E",16.2,24.3,15.0,26.7],["N",15.0,26.7,-4.5,17.3],["E",-4.5,17.3,-10.0,28.6],["N",-10.0,28.6,-13.4,26.9],["E",-13.4,26.9,-14.6,29.4],["S",-14.6,29.4,-6.5,33.3],["E",-6.5,33.3,-7.8,35.8],["S",-7.8,35.8,-4.7,37.3],["E",-4.7,37.3,-9.2,46.5],["N",-9.2,46.5,-12.8,44.7],["E",-12.8,44.7,-14.2,47.6],["N",-14.2,47.6,-67.0,22.1],["W",-67.0,22.1,-65.8,19.7],["N",-65.8,19.7,-71.9,16.7],["W",-71.9,16.7,-66.3,5.1],["S",-66.3,5.1,-32.0,21.7],["W",-32.0,21.7,-30.5,18.5],["N",-30.5,18.5,-33.6,17.0],["W",-33.6,17.0,-29.2,8.0],["S",-29.2,8.0,-26.6,9.3],["W",-26.6,9.3,-25.4,7.0],["N",-25.4,7.0,-51.8,-5.7],["W",-51.8,-5.7,-45.1,-19.5],["S",-45.1,-19.5,-12.0,-3.6],["W",-12.0,-3.6,-10.3,-7.7],["N",-10.3,-7.7,-14.5,-9.7],["W",-14.5,-9.7,-9.0,-24.1],["S",-9.0,-24.1,-0.8,-23.2],["W",-0.8,-23.2,-0.5,-25.6],["N",-0.5,-25.6,-28.6,-28.6],["W",-28.6,-28.6,-26.7,-45.8],["S",-26.7,-45.8,-23.2,-45.4],["W",-23.2,-45.4,-22.9,-47.6],["S",-22.9,-47.6,65.7,-38.0],["E",65.7,-38.0,65.1,-32.2],["S",65.1,-32.2,71.9,-31.4],["E",71.9,-31.4,70.8,-20.9],["N",70.8,-20.9,64.1,-21.6],["E",64.1,-21.6,63.8,-19.0],["N",63.8,-19.0,27.4,-22.9],["W",27.4,-22.9,27.7,-25.6],["N",27.7,-25.6,19.2,-26.5],["E",19.2,-26.5,18.6,-21.5],["S",18.6,-21.5,24.1,-20.7],["E",24.1,-20.7,23.3,-15.9],["S",23.3,-15.9,31.3,-13.2],["E",31.3,-13.2,28.7,-2.5],["N",28.7,-2.5,22.6,-3.0],["N",22.6,-3.0,9.7,-6.2],["E",9.7,-6.2,5.1,3.7]]},{"i":"B1046","n":"Create Tower","z":"7","f":17,"w":43.0,"L":[60,41,58,43],"d":0,"e":[["N",8.2,21.5,-33.3,6.9],["W",-33.3,6.9,-27.7,-7.4],["S",-27.7,-7.4,-12.7,-1.7],["W",-12.7,-1.7,-6.7,-18.4],["S",-6.7,-18.4,11.0,-11.8],["W",11.0,-11.8,14.5,-21.5],["S",14.5,-21.5,29.4,-15.2],["E",29.4,-15.2,26.3,-5.8],["S",26.3,-5.8,33.3,-3.5],["E",33.3,-3.5,27.8,13.0],["N",27.8,13.0,12.5,8.0],["E",12.5,8.0,8.2,21.5]]},{"i":"B1042","n":"Education Resource Centre","z":"7","f":3,"w":43.8,"L":[47,103,88,109],"d":0,"e":[["E",14.5,27.0,20.2,39.0],["E",20.2,39.0,19.0,42.4],["N",19.0,42.4,4.8,50.2],["E",4.8,50.2,2.0,57.8],["N",2.0,57.8,-2.0,61.3],["N",-2.0,61.3,-6.7,61.0],["W",-6.7,61.0,-27.7,37.0],["W",-27.7,37.0,-26.7,24.3],["W",-26.7,24.3,-36.4,12.5],["W",-36.4,12.5,-38.8,-16.6],["S",-38.8,-16.6,-37.0,-18.9],["S",-37.0,-18.9,-28.1,-23.2],["S",-28.1,-23.2,-25.4,-26.7],["W",-25.4,-26.7,-24.8,-32.4],["W",-24.8,-32.4,-26.8,-39.6],["W",-26.8,-39.6,-25.9,-46.1],["S",-25.9,-46.1,-20.7,-50.7],["S",-20.7,-50.7,8.8,-56.7],["S",8.8,-56.7,15.3,-61.3],["E",15.3,-61.3,14.1,-37.4],["S",14.1,-37.4,19.9,-35.9],["N",19.9,-35.9,14.9,-34.4],["E",14.9,-34.4,17.7,-32.0],["S",17.7,-32.0,36.9,-26.6],["E",36.9,-26.6,38.8,-23.3],["E",38.8,-23.3,24.5,9.9],["N",24.5,9.9,20.6,13.9],["N",20.6,13.9,14.2,14.1],["N",14.2,14.1,11.5,17.1],["E",11.5,17.1,14.5,27.0]]},{"i":"B1314","n":"ELM Wing-1","z":"7","f":4,"w":23.4,"L":[15,67,15,67],"d":0,"e":[["W",-4.8,18.4,-12.7,-31.2],["S",-12.7,-31.2,2.1,-33.6],["E",2.1,-33.6,12.7,32.8],["N",12.7,32.8,7.7,33.6],["W",7.7,33.6,5.1,16.8],["N",5.1,16.8,-4.8,18.4]]},{"i":"B1310","n":"ELM Wing-2","z":"7","f":3,"w":37.8,"L":[37,20,37,20],"d":0,"e":[["W",-16.9,8.9,-19.7,-8.5],["S",-19.7,-8.5,-7.9,-10.4],["E",-7.9,-10.4,-7.7,-8.2],["S",-7.7,-8.2,4.8,-10.2],["E",4.8,-10.2,6.1,-2.2],["S",6.1,-2.2,18.1,-4.1],["E",18.1,-4.1,19.7,5.7],["N",19.7,5.7,-10.1,10.4],["W",-10.1,10.4,-10.5,7.9],["N",-10.5,7.9,-16.9,8.9]]},{"i":"B1312","n":"ELM Wing-3","z":"7","f":3,"w":12.5,"L":[28,49,25,52],"d":0,"e":[["W",-13.7,-14.3,-13.4,-25.6],["S",-13.4,-25.6,5.4,-26.1],["E",5.4,-26.1,5.2,-7.5],["S",5.2,-7.5,11.1,-8.4],["E",11.1,-8.4,16.0,21.7],["N",16.0,21.7,-11.5,26.1],["W",-11.5,26.1,-16.0,-1.0],["W",-16.0,-1.0,-13.7,-14.3]]},{"i":"B1323","n":"Learning Commons","z":"7","f":3,"w":33.9,"L":[20,48,20,48],"d":0,"e":[["E",6.4,-25.1,11.0,6.4],["N",11.0,6.4,5.3,7.2],["E",5.3,7.2,7.6,23.1],["N",7.6,23.1,-6.9,25.1],["W",-6.9,25.1,-8.8,11.7],["S",-8.8,11.7,-6.1,11.3],["W",-6.1,11.3,-11.0,-22.5],["S",-11.0,-22.5,6.4,-25.1]]},{"i":"B1039","n":"Low Tuck Kwong Hall","z":"7","f":4,"w":9.5,"L":[20,50,20,50],"d":0,"e":[["S",-18.9,-19.1,-0.7,-27.1],["E",-0.7,-27.1,18.9,19.1],["N",18.9,19.1,0.8,27.1],["W",0.8,27.1,-18.9,-19.1]]},{"i":"B1043","n":"Ngee Ann Kongsi Auditorium","z":"7","f":5,"w":77.7,"L":[19,28,24,27],"d":0,"e":[["W",-13.3,11.9,-12.2,-12.1],["W",-12.2,-12.1,-10.7,-14.5],["S",-10.7,-14.5,-8.6,-15.2],["S",-8.6,-15.2,10.5,-12.5],["S",10.5,-12.5,12.6,-11.0],["E",12.6,-11.0,13.3,-8.6],["E",13.3,-8.6,7.8,12.8],["E",7.8,12.8,5.1,15.2],["N",5.1,15.2,-13.3,11.9]]},{"i":"B1311","n":"NUS College Administration","z":"7","f":2,"w":37.7,"L":[19,60,21,61],"d":0,"e":[["N",8.2,-16.9,2.4,-16.9],["E",2.4,-16.9,2.5,5.4],["E",2.5,5.4,6.7,28.7],["N",6.7,28.7,-5.0,30.4],["W",-5.0,30.4,-8.5,6.9],["W",-8.5,6.9,-8.9,-17.1],["N",-8.9,-17.1,-10.6,-17.1],["W",-10.6,-17.1,-10.4,-30.4],["S",-10.4,-30.4,10.6,-30.2],["E",10.6,-30.2,8.2,-16.9]]},{"i":"B1321","n":"NUS College-Cendana Residential Apartments-1","z":"7","f":13,"w":31.0,"L":[25,22,25,22],"d":0,"e":[["W",-11.0,12.3,-12.6,-1.0],["S",-12.6,-1.0,-8.9,-1.4],["W",-8.9,-1.4,-9.6,-7.6],["S",-9.6,-7.6,-4.5,-8.2],["W",-4.5,-8.2,-4.7,-10.3],["S",-4.7,-10.3,11.3,-12.3],["E",11.3,-12.3,12.6,-1.8],["N",12.6,-1.8,-0.6,-0.1],["E",-0.6,-0.1,0.8,10.9],["N",0.8,10.9,-11.0,12.3]]},{"i":"B1320","n":"NUS College-Cendana Residential Apartments-2","z":"7","f":27,"w":37.8,"L":[26,26,26,25],"d":0,"e":[["W",-3.9,13.2,-4.3,6.2],["N",-4.3,6.2,-9.4,6.8],["W",-9.4,6.8,-9.6,5.3],["N",-9.6,5.3,-12.6,5.7],["W",-12.6,5.7,-13.8,-4.4],["S",-13.8,-4.4,-5.1,-5.5],["W",-5.1,-5.5,-5.6,-9.2],["S",-5.6,-9.2,-2.5,-9.6],["W",-2.5,-9.6,-2.8,-12.2],["S",-2.8,-12.2,6.4,-13.2],["E",6.4,-13.2,8.7,4.7],["S",8.7,4.7,13.2,4.2],["E",13.2,4.2,13.8,9.2],["N",13.8,9.2,8.0,9.9],["E",8.0,9.9,8.3,12.3],["N",8.3,12.3,-3.9,13.2]]},{"i":"B1315","n":"NUS College-ELM Staff & Student Apartments","z":"7","f":25,"w":35.1,"L":[37,29,37,29],"d":0,"e":[["W",-18.2,7.5,-19.7,-2.1],["S",-19.7,-2.1,-2.4,-4.8],["W",-2.4,-4.8,-3.8,-13.8],["S",-3.8,-13.8,6.0,-15.4],["E",6.0,-15.4,8.7,1.4],["S",8.7,1.4,17.8,-0.1],["E",17.8,-0.1,19.7,11.6],["N",19.7,11.6,-4.5,15.4],["W",-4.5,15.4,-6.1,5.6],["N",-6.1,5.6,-18.2,7.5]]},{"i":"B1308","n":"NUS College-Saga Staff & Student Apartments-1","z":"7","f":19,"w":28.0,"L":[24,25,24,25],"d":0,"e":[["W",-11.9,12.5,-12.0,-7.8],["S",-12.0,-7.8,-6.5,-7.8],["W",-6.5,-7.8,-6.5,-12.3],["S",-6.5,-12.3,12.0,-12.5],["E",12.0,-12.5,12.0,-1.9],["N",12.0,-1.9,1.0,-1.8],["E",1.0,-1.8,1.2,12.4],["N",1.2,12.4,-11.9,12.5]]},{"i":"B1307","n":"NUS College-Saga Staff & Student Apartments-2","z":"7","f":22,"w":30.5,"L":[21,25,21,25],"d":0,"e":[["W",0.0,12.7,0.0,-3.0],["N",0.0,-3.0,-10.4,-3.0],["W",-10.4,-3.0,-10.4,-12.7],["S",-10.4,-12.7,3.2,-12.7],["E",3.2,-12.7,3.2,-8.9],["S",3.2,-8.9,8.8,-8.9],["E",8.8,-8.9,8.8,-3.5],["S",8.8,-3.5,10.4,-3.5],["E",10.4,-3.5,10.4,12.7],["N",10.4,12.7,0.0,12.7]]},{"i":"B1317","n":"NUS Law (East Core)","z":"7","f":3,"w":33.9,"L":[37,105,37,105],"d":0,"e":[["W",-5.0,53.5,-9.3,20.7],["N",-9.3,20.7,-14.3,21.4],["W",-14.3,21.4,-22.2,-29.9],["S",-22.2,-29.9,-19.2,-30.3],["W",-19.2,-30.3,-22.1,-50.3],["S",-22.1,-50.3,0.3,-53.5],["E",0.3,-53.5,3.2,-33.8],["S",3.2,-33.8,14.7,-35.5],["E",14.7,-35.5,22.2,16.5],["N",22.2,16.5,13.9,17.7],["E",13.9,17.7,18.6,50.1],["N",18.6,50.1,-5.0,53.5]]},{"i":"B1316","n":"NUS Law (West Core)","z":"7","f":4,"w":24.1,"L":[37,117,37,117],"d":0,"e":[["W",-2.9,60.1,-3.6,55.1],["N",-3.6,55.1,-7.5,55.7],["W",-7.5,55.7,-23.5,-55.4],["S",-23.5,-55.4,9.2,-60.1],["E",9.2,-60.1,14.2,-25.5],["N",14.2,-25.5,10.9,-25.0],["E",10.9,-25.0,13.7,-5.3],["S",13.7,-5.3,18.0,-5.9],["E",18.0,-5.9,22.1,22.9],["N",22.1,22.9,18.7,23.4],["E",18.7,23.4,23.5,56.3],["N",23.5,56.3,-2.9,60.1]]},{"i":"B1040","n":"Residential College 4","z":"7","f":19,"w":16.6,"L":[66,19,67,20],"d":0,"e":[["N",28.8,-1.9,-20.9,19.2],["W",-20.9,19.2,-23.4,13.6],["S",-23.4,13.6,-18.0,11.5],["W",-18.0,11.5,-20.7,4.9],["N",-20.7,4.9,-26.0,7.0],["W",-26.0,7.0,-28.8,1.1],["S",-28.8,1.1,21.8,-19.2],["E",21.8,-19.2,24.4,-13.0],["N",24.4,-13.0,18.3,-10.6],["E",18.3,-10.6,20.6,-4.4],["S",20.6,-4.4,26.5,-6.7],["E",26.5,-6.7,28.8,-1.9]]},{"i":"B1306","n":"Saga Wing-1","z":"7","f":3,"w":12.0,"L":[27,11,27,11],"d":0,"e":[["W",-13.6,5.3,-13.7,-5.3],["S",-13.7,-5.3,13.7,-5.5],["E",13.7,-5.5,13.7,5.5],["N",13.7,5.5,-13.6,5.3]]},{"i":"B1309","n":"Saga Wing-2","z":"7","f":3,"w":12.0,"L":[16,29,16,29],"d":0,"e":[["S",5.8,-4.0,7.6,-4.0],["E",7.6,-4.0,8.1,14.4],["N",8.1,14.4,-7.5,14.7],["W",-7.5,14.7,-8.1,-14.5],["S",-8.1,-14.5,5.6,-14.7],["E",5.6,-14.7,5.8,-4.0]]},{"i":"B1313","n":"Saga Wing-3","z":"7","f":3,"w":12.0,"L":[46,22,44,22],"d":0,"e":[["W",-22.5,11.6,-23.1,-10.8],["S",-23.1,-10.8,7.8,-11.6],["E",7.8,-11.6,8.1,-1.9],["S",8.1,-1.9,21.1,-2.0],["E",21.1,-2.0,23.1,10.5],["N",23.1,10.5,-22.5,11.6]]},{"i":"B1305","n":"Saga Wing-4","z":"7","f":2,"w":8.0,"L":[10,14,10,16],"d":0,"e":[["E",5.2,-8.0,5.0,6.4],["N",5.0,6.4,-5.2,8.0],["W",-5.2,8.0,-5.2,-8.0],["S",-5.2,-8.0,5.2,-8.0]]},{"i":"B1045","n":"Stephen Riady Centre","z":"7","f":3,"w":72.2,"L":[164,122,222,173],"d":1,"e":[["W",-76.3,76.6,-83.8,74.3],["S",-83.8,74.3,-82.4,66.0],["W",-82.4,66.0,-86.6,64.2],["S",-86.6,64.2,-83.4,47.9],["S",-83.4,47.9,-81.0,39.7],["S",-81.0,39.7,-53.5,39.2],["W",-53.5,39.2,-62.2,31.8],["W",-62.2,31.8,-74.0,23.5],["S",-74.0,23.5,-60.0,0.6],["S",-60.0,0.6,-54.1,-8.2],["E",-54.1,-8.2,-34.1,6.2],["S",-34.1,6.2,-30.3,3.8],["W",-30.3,3.8,-48.8,-11.6],["W",-48.8,-11.6,-50.3,-15.8],["S",-50.3,-15.8,-48.6,-19.9],["S",-48.6,-19.9,-43.7,-22.8],["S",-43.7,-22.8,-22.5,-25.6],["W",-22.5,-25.6,-29.5,-34.4],["S",-29.5,-34.4,3.1,-52.4],["S",3.1,-52.4,22.8,-64.7],["E",22.8,-64.7,41.5,-43.8],["E",41.5,-43.8,43.7,-43.5],["W",43.7,-43.5,43.5,-45.4],["W",43.5,-45.4,28.6,-68.6],["S",28.6,-68.6,51.1,-83.9],["E",51.1,-83.9,86.6,-35.4],["N",86.6,-35.4,83.2,-33.3],["N",83.2,-33.3,80.7,-27.4],["N",80.7,-27.4,75.2,-23.3],["N",75.2,-23.3,70.2,-22.4],["N",70.2,-22.4,49.0,-4.7],["N",49.0,-4.7,43.6,-4.5],["E",43.6,-4.5,44.6,-1.8],["N",44.6,-1.8,43.1,1.7],["N",43.1,1.7,16.0,22.9],["N",16.0,22.9,11.8,24.7],["W",11.8,24.7,8.3,23.8],["N",8.3,23.8,7.4,31.4],["N",7.4,31.4,4.3,38.2],["N",4.3,38.2,-1.9,41.8],["N",-1.9,41.8,-7.9,43.8],["E",-7.9,43.8,-6.5,47.5],["N",-6.5,47.5,-13.3,70.3],["N",-13.3,70.3,-15.4,83.9],["W",-15.4,83.9,-23.9,81.3],["W",-23.9,81.3,-76.3,76.6]]},{"i":"B1030","n":"Tembusu Residential College (TRC)","z":"7","f":20,"w":20.5,"L":[54,27,54,27],"d":0,"e":[["W",-25.5,2.9,-20.9,-6.9],["S",-20.9,-6.9,-11.2,-2.5],["W",-11.2,-2.5,-9.2,-6.7],["N",-9.2,-6.7,-18.8,-11.1],["W",-18.8,-11.1,-14.1,-21.2],["S",-14.1,-21.2,25.5,-2.9],["E",25.5,-2.9,14.1,21.2],["N",14.1,21.2,-25.5,2.9]]},{"i":"B1029","n":"Tembusu Residential College (TRC) Multi-Purpose Hall","z":"7","f":2,"w":12.5,"L":[26,28,26,28],"d":1,"e":[["W",-1.3,19.1,-19.1,-2.8],["S",-19.1,-2.8,0.8,-19.1],["E",0.8,-19.1,19.1,2.4],["N",19.1,2.4,-1.3,19.1]]},{"i":"B1250","n":"Town Plaza","z":"7","f":2,"w":50.0,"L":[59,72,14,45],"d":1,"e":[["W",-14.8,25.7,-37.1,-13.3],["S",-37.1,-13.3,-30.5,-25.7],["E",-30.5,-25.7,-19.6,-23.8],["E",-19.6,-23.8,21.9,-9.2],["E",21.9,-9.2,37.1,-2.7],["N",37.1,-2.7,-14.8,25.7]]},{"i":"B1031","n":"TRC & ARC Dining Hall","z":"7","f":1,"w":14.2,"L":[39,28,41,27],"d":0,"e":[["E",23.2,-5.3,12.2,20.5],["N",12.2,20.5,-23.2,4.9],["W",-23.2,4.9,-16.7,-9.0],["W",-16.7,-9.0,-15.6,-18.7],["S",-15.6,-18.7,-12.2,-18.9],["W",-12.2,-18.9,-11.5,-20.5],["S",-11.5,-20.5,23.2,-5.3]]},{"i":"B1032","n":"TRC Learn Lobe","z":"7","f":2,"w":13.5,"L":[22,20,22,20],"d":0,"e":[["W",-11.2,10.0,-11.1,-10.2],["S",-11.1,-10.2,11.2,-10.0],["E",11.2,-10.0,11.1,10.2],["N",11.1,10.2,-11.2,10.0]]},{"i":"B1342","n":"Utown Residence (North Tower)","z":"7","f":25,"w":43.1,"L":[92,75,94,78],"d":0,"e":[["N",16.7,31.3,-35.9,12.6],["W",-35.9,12.6,-21.4,-27.6],["S",-21.4,-27.6,-8.9,-23.2],["E",-8.9,-23.2,-10.1,-19.9],["S",-10.1,-19.9,-6.2,-18.6],["W",-6.2,-18.6,-5.1,-21.6],["S",-5.1,-21.6,18.2,-13.3],["W",18.2,-13.3,20.0,-18.2],["N",20.0,-18.2,16.1,-19.5],["W",16.1,-19.5,20.3,-31.3],["S",20.3,-31.3,35.9,-25.8],["E",35.9,-25.8,23.5,8.7],["N",23.5,8.7,21.9,8.1],["E",21.9,8.1,20.3,12.6],["S",20.3,12.6,23.1,13.6],["E",23.1,13.6,16.7,31.3],["S",1.5,17.7,5.4,17.2],["S",5.4,17.2,9.0,19.2],["W",9.0,19.2,12.4,5.1],["N",12.4,5.1,-16.5,-4.3],["E",-16.5,-4.3,-20.0,6.2],["S",-20.0,6.2,1.5,17.7]]},{"i":"B1343","n":"Utown Residence (South Tower)","z":"7","f":24,"w":40.5,"L":[85,55,88,52],"d":0,"e":[["S",-29.8,12.7,-29.3,12.6],["W",-29.3,12.6,-28.8,2.7],["S",-28.8,2.7,-25.5,2.9],["W",-25.5,2.9,-23.9,-8.1],["N",-23.9,-8.1,-27.2,-9.9],["W",-27.2,-9.9,-25.7,-16.7],["S",-25.7,-16.7,-20.4,-16.5],["W",-20.4,-16.5,-19.4,-24.1],["S",-19.4,-24.1,-4.8,-24.1],["S",-4.8,-24.1,11.6,-22.7],["S",11.6,-22.7,29.8,-17.9],["E",29.8,-17.9,19.5,24.1],["N",19.5,24.1,-29.8,12.7],["E",-12.8,-11.6,-14.9,0.3],["S",-14.9,0.3,13.8,6.8],["W",13.8,6.8,17.4,-8.9],["N",17.4,-8.9,-12.8,-11.6]]},{"i":"B1037","n":"West Learn Lobe","z":"7","f":3,"w":28.6,"L":[21,20,21,20],"d":1,"e":[["W",-14.7,1.0,-1.7,-14.5],["S",-1.7,-14.5,14.7,-1.0],["E",14.7,-1.0,1.7,14.5],["N",1.7,14.5,-14.7,1.0]]}];
+const SIDES = ['N', 'E', 'S', 'W'];
+const SIDE_NAME = { N: 'N facade', E: 'E facade', S: 'S facade', W: 'W facade' };
+const STAND = { N: 'North of the building, facing south', E: 'East of the building, facing west', S: 'South of the building, facing north', W: 'West of the building, facing east' };
+const byId = Object.fromEntries(BUILDINGS.map(b => [b.i, b]));
+const $ = s => document.querySelector(s);
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ---------------- state & storage ---------------- */
+const S = { recs: {}, db: null, user: null, assets: null, downloads: null, uid: null, admin: false, local: false, zone: 'all', filter: 'all', q: '', names: {} };
+/* Data model: buildings/<bldg_id> = { id, claim: {by, at} | null, sides: { N: { items: { <mid>: measurement } } } }.
+   Measurements are keyed by id and written with nested merges, so two surveyors saving at once never overwrite each other.
+   Deleting marks a measurement deleted rather than removing it, so the history stays. */
+function sideItems(id, s) {
+  const it = (((S.recs[id] || {}).sides || {})[s] || {}).items || {};
+  return Object.values(it).filter(m => m && !m.deleted && typeof m.wwr === 'number').sort((a, b) => (a.at || '').localeCompare(b.at || ''));
+}
+function sideValue(id, s) { const it = sideItems(id, s); if (!it.length) return null; return it.reduce((a, x) => a + x.wwr, 0) / it.length; }
+function sideSpread(id, s) { const it = sideItems(id, s); if (it.length < 2) return 0; const v = it.map(m => m.wwr); return Math.max(...v) - Math.min(...v); }
+const SPREAD_FLAG = 0.10;
+function hasFacade(b, s) { return b.L[SIDES.indexOf(s)] > 0; }
+function claimOf(id) { return (S.recs[id] || {}).claim || null; }
+
+function deepMerge(a, b) {
+  const o = Object.assign({}, a || {});
+  for (const k in b) o[k] = (b[k] && typeof b[k] === 'object' && !Array.isArray(b[k]) && o[k] && typeof o[k] === 'object') ? deepMerge(o[k], b[k]) : b[k];
+  return o;
+}
+function lsGet(k, d) { try { return JSON.parse(localStorage.getItem(k) || d); } catch (e) { return JSON.parse(d); } }
+function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+function saveLocal() { if (!lsSet('wwr-survey', S.recs)) toast('Could not save on this device'); }
+
+/* Writes that fail for lack of signal wait in a queue on this phone and are sent when the connection returns. */
+let pending = lsGet('wwr-pending', '[]');
+function setPending(p) { pending = p; lsSet('wwr-pending', p); syncLabel(); }
+async function sendPatch(id, patch) {
+  const ref = S.db.doc('buildings/' + id);
+  try { await ref.update(patch); }
+  catch (e) {
+    if (e && (e.code === 'invalid_argument' || e.code === 'transform_error')) {   // record not created yet
+      const snap = await ref.get();
+      if (snap.exists) throw e;
+      await ref.set(deepMerge({ id, sides: {} }, patch));
+    } else throw e;
+  }
+}
+const retryable = e => !e || ['unavailable', 'resource_exhausted', undefined].includes(e.code);
+async function patchBuilding(id, patch) {
+  patch.updatedAt = new Date().toISOString();
+  S.recs[id] = deepMerge(S.recs[id] || { id, sides: {} }, patch); render();
+  if (S.local) { saveLocal(); return 'saved'; }
+  try { await sendPatch(id, patch); return 'saved'; }
+  catch (e) {
+    if (!retryable(e)) throw e;
+    setPending([...pending, { id, patch }]); return 'queued';
+  }
+}
+let flushing = false;
+async function flushPending() {
+  if (flushing || !S.db || !pending.length) return; flushing = true;
+  try {
+    while (pending.length) {
+      const [p] = pending;
+      try { await sendPatch(p.id, p.patch); setPending(pending.slice(1)); }
+      catch (e) { if (retryable(e)) break; setPending(pending.slice(1)); toast('A queued change was refused: ' + (e.code || 'error')); }
+    }
+  } finally { flushing = false; }
+}
+window.addEventListener('online', flushPending);
+setInterval(flushPending, 30000);
+let syncBase = 'Connecting…';
+function syncLabel(t) { if (t) syncBase = t; $('#syncState').textContent = syncBase + (pending.length ? ' · ' + pending.length + ' waiting to upload' : ''); }
+
+const STANDALONE = !(window.claude && window.claude.use);
+async function init() {
+  render();
+  const c = window.claude;
+  if (STANDALONE) {
+    goLocal('Measurements are saved on this phone only. When you finish a session, tap Export → Measurement log and send the file to the survey lead.');
+    S.surveyor = lsGet('wwr-surveyor', '""');
+    if (!S.surveyor) askName(); else syncLabel('On this phone · ' + S.surveyor);
+    return;
+  }
+  const [db, user, assets, downloads] = await Promise.all(['db', 'user', 'assets', 'downloads'].map(n => c.use(n).catch(() => null)));
+  S.assets = assets; S.downloads = downloads; S.user = user;
+  if (user) {
+    try { S.uid = await user.id(); } catch (e) {}
+    try { S.admin = await user.canEdit(); } catch (e) {}
+    try { S.myName = await user.name(); } catch (e) {}
+  }
+  if (!db) return goLocal('The shared store is not available here, so measurements are saved on this device only. Export regularly.');
+  S.db = db;
+  const timer = setTimeout(() => syncLabel('Store not reachable yet. Data may be out of date'), 10000);
+  db.collection('buildings').onSnapshot(snap => {
+    const r = {}; snap.docs.forEach(d => { r[d.id] = d.data(); });
+    pending.forEach(p => { r[p.id] = deepMerge(r[p.id], p.patch); });   // keep queued work visible
+    S.recs = r;
+    if (!snap.metadata.fromCache) { clearTimeout(timer); syncLabel('Synced with the team'); flushPending(); }
+    render(); if (S.view === 'side') renderSide();
+  }, err => { clearTimeout(timer); syncLabel('Sync stopped (' + err.code + '). Reload to reconnect'); });
+}
+
+/* Names are looked up each render and never stored; ids are the durable reference. */
+async function refreshNames(ids) {
+  if (!S.user || !ids.length) return;
+  try {
+    const ps = await S.user.profiles(ids); let changed = false;
+    ids.forEach(i => { const n = (ps[i] && ps[i].name) || ''; if (S.names[i] !== n) { S.names[i] = n; changed = true; } });
+    if (changed) { render(true); if (S.view === 'side') renderSide(true); }
+  } catch (e) {}
+}
+function who(id) { if (!id) return ''; if (id === S.uid) return 'you'; return S.names[id] || 'a teammate'; }
+function askName() {
+  const l = document.createElement('label'); l.className = 'f'; l.textContent = 'Your name (added to each measurement you export)';
+  const i = document.createElement('input'); i.id = 'surveyorName'; i.autocomplete = 'name'; i.value = S.surveyor || ''; l.appendChild(i);
+  openModal('Who is surveying?', l, [mkBtn('Save', 'primary', () => {
+    const v = i.value.trim(); if (!v) { i.focus(); return; }
+    S.surveyor = v; lsSet('wwr-surveyor', v); closeModal(); syncLabel('On this phone · ' + v);
+  })]);
+  setTimeout(() => i.focus(), 50);
+}
+function goLocal(msg) {
+  S.local = true; S.recs = lsGet('wwr-survey', '{}');
+  syncLabel('On this device');
+  const b = $('#storeBanner'); b.textContent = msg; b.hidden = false; render();
+}
+
+/* ---------------- list ---------------- */
+const zones = [...new Set(BUILDINGS.map(b => b.z))].sort((a, b) => (+a) - (+b) || a.localeCompare(b));
+function renderZoneChips() {
+  const host = $('#zoneChips'); host.innerHTML = '';
+  ['all', ...zones].forEach(z => {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'chip';
+    b.textContent = z === 'all' ? 'All zones' : 'Zone ' + z; b.setAttribute('aria-pressed', String(S.zone === z));
+    b.onclick = () => { S.zone = z; renderZoneChips(); render(); }; host.appendChild(b);
+  });
+}
+function render(skipNames) {
+  let done = 0, total = 0, mine = 0;
+  const people = new Set();
+  BUILDINGS.forEach(b => {
+    const cl = claimOf(b.i); if (cl && cl.by) people.add(cl.by);
+    SIDES.forEach(s => {
+      if (!hasFacade(b, s)) return; total++;
+      const it = sideItems(b.i, s); if (it.length) done++;
+      if (it.some(m => m.by && m.by === S.uid)) mine++;
+      it.forEach(m => m.by && people.add(m.by));
+    });
+  });
+  $('#progTxt').textContent = done + ' / ' + total + ' sides' + (S.uid && !S.local ? ' · you ' + mine : '');
+  $('#progBar').style.width = (total ? 100 * done / total : 0) + '%';
+  const q = S.q.toLowerCase();
+  const F = {
+    all: () => true,
+    mine: b => (claimOf(b.i) || {}).by === S.uid,
+    free: b => !claimOf(b.i),
+    todo: b => SIDES.some(s => hasFacade(b, s) && !sideItems(b.i, s).length),
+    check: b => SIDES.some(s => sideSpread(b.i, s) > SPREAD_FLAG),
+  }[S.filter];
+  const list = BUILDINGS.filter(b => (S.zone === 'all' || b.z === S.zone)
+      && (!q || b.n.toLowerCase().includes(q) || b.i.toLowerCase().includes(q)) && F(b))
+    .sort((a, b) => a.n.localeCompare(b.n));
+  const ul = $('#list'); ul.innerHTML = '';
+  if (!list.length) { const li = document.createElement('li'); li.className = 'muted'; li.textContent = 'No buildings match.'; ul.appendChild(li); }
+  const frag = document.createDocumentFragment();
+  list.forEach(b => {
+    const li = document.createElement('li'); li.className = 'bld';
+    const nm = document.createElement('div'); nm.className = 'nm'; nm.textContent = b.n;
+    const meta = document.createElement('div'); meta.className = 'meta';
+    meta.textContent = b.i + ' · Zone ' + b.z + ' · ' + b.f + ' fl · GIS ' + b.w.toFixed(0) + '%';
+    if (b.d) { const t = document.createElement('span'); t.className = 'tag'; t.textContent = 'diagonal'; t.style.marginLeft = '6px'; meta.appendChild(t); }
+    const cl = claimOf(b.i);
+    if (cl && cl.by) { const t = document.createElement('span'); t.className = 'claim' + (cl.by === S.uid ? ' me' : ''); t.textContent = 'Claimed by ' + who(cl.by); meta.appendChild(t); }
+    const sd = document.createElement('div'); sd.className = 'sides';
+    SIDES.forEach(s => {
+      const btn = document.createElement('button'); btn.type = 'button'; btn.className = 'sidechip';
+      btn.style.setProperty('--c', 'var(--side' + s + ')');
+      const v = sideValue(b.i, s);
+      if (!hasFacade(b, s)) { btn.classList.add('na'); btn.disabled = true; }
+      if (v != null) btn.classList.add('done');
+      if (sideSpread(b.i, s) > SPREAD_FLAG) btn.classList.add('flag');
+      btn.innerHTML = '<b></b><span></span>';
+      btn.firstChild.textContent = s; btn.lastChild.textContent = v != null ? (100 * v).toFixed(0) : '';
+      btn.setAttribute('aria-label', b.n + ' ' + SIDE_NAME[s] + (v != null ? ', ' + (100 * v).toFixed(0) + ' percent' : ', not measured'));
+      btn.onclick = () => openSide(b.i, s);
+      sd.appendChild(btn);
+    });
+    li.append(nm, sd, meta); frag.appendChild(li);
+  });
+  ul.appendChild(frag);
+  if (!skipNames) refreshNames([...people].filter(i => i !== S.uid));
+}
+$('#q').addEventListener('input', e => { S.q = e.target.value; render(true); });
+document.querySelectorAll('#filterChips [data-f]').forEach(b => b.onclick = () => {
+  S.filter = b.dataset.f; document.querySelectorAll('#filterChips [data-f]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); render(true);
+});
+
+/* ---------------- views ---------------- */
+function show(v) {
+  S.view = v;
+  for (const [k, id] of Object.entries({ list: 'vList', side: 'vSide', rect: 'vRect', crop: 'vCrop', mark: 'vMark', save: 'vSave' })) $('#' + id).hidden = k !== v;
+  document.body.style.height = ['rect', 'crop', 'mark'].includes(v) ? '100%' : '';
+  if (v === 'rect') VR.resize(); if (v === 'crop') VC.resize(); if (v === 'mark') VM.resize();
+  window.scrollTo(0, 0);
+}
+document.querySelectorAll('[data-back]').forEach(b => b.onclick = () => { show('list'); render(); });
+document.querySelectorAll('[data-cancel]').forEach(b => b.onclick = () => confirmBox('Discard this measurement?', 'The photo and marks will be lost.', 'Discard', () => openSide(S.cur.id, S.cur.side)));
+
+function ctxLabel() { const b = byId[S.cur.id]; return b.n + ' · ' + SIDE_NAME[S.cur.side]; }
+
+function openSide(id, side) {
+  S.cur = { id, side }; renderSide(); show('side');
+}
+function renderSide(skipNames) {
+  const { id, side } = S.cur, b = byId[id];
+  const cl = claimOf(id), mineClaim = cl && cl.by && cl.by === S.uid;
+  $('#sClaim').textContent = !cl || !cl.by ? 'Nobody has claimed this building yet. Claim it so others skip it.'
+    : mineClaim ? 'You have claimed this building.' : 'Claimed by ' + who(cl.by) + '. Add measurements only if you have agreed with them.';
+  $('#btnClaim').textContent = mineClaim ? 'Release' : (cl && cl.by ? 'Take over' : 'Claim building');
+  $('#btnClaim').hidden = S.local || !S.uid || (cl && cl.by && !mineClaim && !S.admin);
+  const ids = new Set(); if (cl && cl.by) ids.add(cl.by); sideItems(id, side).forEach(m => m.by && ids.add(m.by));
+  if (!skipNames) refreshNames([...ids].filter(i => i !== S.uid));
+  const sp = sideSpread(id, side), it0 = sideItems(id, side);
+  $('#sSpread').hidden = !(sp > SPREAD_FLAG);
+  if (sp > SPREAD_FLAG) { const v = it0.map(m => 100 * m.wwr); $('#sSpread').textContent = 'Measurements disagree (' + Math.min(...v).toFixed(0) + '–' + Math.max(...v).toFixed(0) + '%). Check that they cover the same facade, or delete the outlier.'; }
+  $('#sTitle').firstChild.nodeValue = b.n;
+  $('#sSub').textContent = b.i + ' · Zone ' + b.z + ' · ' + b.f + ' floors';
+  const col = 'var(--side' + side + ')';
+  $('#sSide').textContent = SIDE_NAME[side]; $('#sSide').style.setProperty('--c', col);
+  $('#sLen').textContent = b.L[SIDES.indexOf(side)] + ' m';
+  $('#sGis').textContent = b.w.toFixed(1) + '% (whole building)';
+  $('#sStand').textContent = STAND[side];
+  $('#sDiag').hidden = !b.d;
+  drawPlan(b, side);
+  const items = sideItems(id, side), v = sideValue(id, side);
+  $('#sVal').textContent = v != null ? (100 * v).toFixed(1) + '%' : '–';
+  $('#sValNote').textContent = items.length ? (items.length === 1 ? 'from 1 measurement' : 'average of ' + items.length + ' measurements') : 'No measurements yet';
+  const ul = $('#sMeas'); ul.innerHTML = '';
+  items.forEach((m, k) => {
+    const li = document.createElement('li');
+    let th;
+    if (m.img || m.localPhotos) {
+      th = document.createElement('button'); th.type = 'button'; th.className = 'thumb'; th.style.padding = '0'; th.style.border = '0';
+      th.setAttribute('aria-label', 'View photos for ' + (m.label || 'measurement ' + (k + 1)));
+      const im = document.createElement('img'); im.alt = ''; im.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:6px';
+      photoUrl(m, 'm').then(u => { if (u) im.src = u; else th.textContent = 'photo missing'; });
+      th.appendChild(im); th.onclick = () => viewPhotos(m);
+    }
+    else { th = document.createElement('div'); th.className = 'thumb'; th.textContent = m.method === 'eye' ? 'by eye' : 'no image'; }
+    const mid = document.createElement('div');
+    const v2 = document.createElement('span'); v2.className = 'v'; v2.textContent = (100 * m.wwr).toFixed(1) + '%';
+    const sm = document.createElement('small');
+    sm.textContent = [m.label, m.method === 'eye' ? 'by eye' : 'traced', m.source, m.conf ? m.conf + ' confidence' : '', (m.at || '').slice(0, 10), m.surveyor ? 'by ' + m.surveyor : (m.by && !S.local ? 'by ' + who(m.by) : '')].filter(Boolean).join(' · ');
+    const nt = document.createElement('small'); nt.textContent = m.note || '';
+    mid.append(v2, sm, nt);
+    li.append(th, mid);
+    if (S.local || S.admin || (m.by && m.by === S.uid)) {
+      const del = document.createElement('button'); del.type = 'button'; del.className = 'iconbtn'; del.textContent = 'Delete';
+      del.setAttribute('aria-label', 'Delete measurement ' + (k + 1));
+      del.onclick = () => confirmBox('Delete this measurement?', (100 * m.wwr).toFixed(1) + '% · ' + (m.label || ''), 'Delete', async () => {
+        try {
+          await patchBuilding(id, { sides: { [side]: { items: { [m.mid]: { deleted: true, deletedBy: S.uid || null, deletedAt: new Date().toISOString() } } } } });
+          toast('Deleted'); renderSide();
+        } catch (e) { toast('Could not delete: ' + (e.code || e.message)); }
+      });
+      li.append(del);
+    } else li.append(document.createElement('span'));
+    ul.appendChild(li);
+  });
+}
+$('#btnClaim').onclick = async () => {
+  const { id } = S.cur, cl = claimOf(id), mine = cl && cl.by === S.uid;
+  try {
+    await patchBuilding(id, { claim: mine ? null : { by: S.uid, at: new Date().toISOString() } });
+    toast(mine ? 'Released' : 'Claimed'); renderSide();
+  } catch (e) { toast('Could not update the claim: ' + (e.code || e.message)); }
+};
+function drawPlan(b, side) {
+  const svg = $('#sPlan'); let m = 1;
+  b.e.forEach(e => { m = Math.max(m, Math.abs(e[1]), Math.abs(e[2]), Math.abs(e[3]), Math.abs(e[4])); });
+  const k = 50 / m; let h = '';
+  b.e.forEach(e => {
+    const on = e[0] === side;
+    h += '<line x1="' + (e[1] * k).toFixed(1) + '" y1="' + (-e[2] * k).toFixed(1) + '" x2="' + (e[3] * k).toFixed(1) + '" y2="' + (-e[4] * k).toFixed(1) +
+      '" stroke="var(--side' + e[0] + ')" stroke-width="' + (on ? 5 : 1.6) + '" stroke-linecap="round" opacity="' + (on ? 1 : .45) + '"/>';
+  });
+  h += '<text x="52" y="-46" font-size="11" font-weight="600" fill="var(--muted)" text-anchor="end">N↑</text>';
+  svg.innerHTML = h;
+}
+
+/* ---------------- photo intake ---------------- */
+async function takeFile(file) {
+  if (!file) return;
+  try {
+    const bmp = await loadImage(file);
+    const max = 2400, sc = Math.min(1, max / Math.max(bmp.width, bmp.height));
+    const cv = document.createElement('canvas'); cv.width = Math.round(bmp.width * sc); cv.height = Math.round(bmp.height * sc);
+    cv.getContext('2d').drawImage(bmp, 0, 0, cv.width, cv.height);
+    S.src = cv; S.shapes = []; S.undo = [];
+    const w = cv.width, h = cv.height;
+    S.quad = [[w * .12, h * .12], [w * .88, h * .12], [w * .88, h * .88], [w * .12, h * .88]];
+    document.querySelectorAll('.ctx').forEach(e => e.textContent = ctxLabel());
+    VR.setImage(cv); show('rect');
+  } catch (e) { toast('Could not open that image. Try a JPEG or PNG.'); }
+}
+function loadImage(file) {
+  if (window.createImageBitmap) return createImageBitmap(file, { imageOrientation: 'from-image' }).catch(() => viaImg(file));
+  return viaImg(file);
+}
+function viaImg(file) { return new Promise((res, rej) => { const u = URL.createObjectURL(file); const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = u; }); }
+['#fileCam', '#fileGal'].forEach(s => $(s).addEventListener('change', e => { const f = e.target.files[0]; e.target.value = ''; takeFile(f); }));
+
+/* ---------------- viewport (pan / pinch / zoom) ---------------- */
+function Viewport(canvas, tool) {
+  const V = { canvas, ctx: canvas.getContext('2d'), img: null, s: 1, tx: 0, ty: 0, tool, ptrs: new Map(), pinch: null };
+  V.resize = () => {
+    const r = canvas.getBoundingClientRect(), d = window.devicePixelRatio || 1;
+    canvas.width = Math.max(1, Math.round(r.width * d)); canvas.height = Math.max(1, Math.round(r.height * d));
+    V.dpr = d; V.cw = r.width; V.ch = r.height; if (V.img) V.fit(); V.draw();
+  };
+  V.setImage = img => { V.img = img; V.fit(); };
+  V.fit = () => { if (!V.img || !V.cw) return; const m = 24; V.s = Math.min((V.cw - 2 * m) / V.img.width, (V.ch - 2 * m) / V.img.height); V.tx = (V.cw - V.img.width * V.s) / 2; V.ty = (V.ch - V.img.height * V.s) / 2; };
+  V.toImg = (x, y) => [(x - V.tx) / V.s, (y - V.ty) / V.s];
+  V.toScr = (x, y) => [x * V.s + V.tx, y * V.s + V.ty];
+  V.zoomAt = (f, cx, cy) => { const [ix, iy] = V.toImg(cx, cy); V.s = Math.min(40, Math.max(0.02, V.s * f)); V.tx = cx - ix * V.s; V.ty = cy - iy * V.s; V.draw(); };
+  V.draw = () => {
+    const c = V.ctx; c.setTransform(V.dpr, 0, 0, V.dpr, 0, 0); c.clearRect(0, 0, V.cw, V.ch);
+    if (!V.img) return;
+    c.save(); c.translate(V.tx, V.ty); c.scale(V.s, V.s); c.imageSmoothingQuality = 'high'; c.drawImage(V.img, 0, 0); c.restore();
+    tool.draw && tool.draw(V);
+  };
+  const pos = e => { const r = canvas.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  canvas.addEventListener('pointerdown', e => {
+    canvas.setPointerCapture(e.pointerId); V.ptrs.set(e.pointerId, pos(e));
+    if (V.ptrs.size === 2) {
+      tool.cancel && tool.cancel(V);
+      const [a, b] = [...V.ptrs.values()];
+      V.pinch = { d: Math.hypot(a[0] - b[0], a[1] - b[1]), m: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], s: V.s, tx: V.tx, ty: V.ty };
+    } else if (V.ptrs.size === 1) { const p = pos(e); tool.down && tool.down(V, V.toImg(p[0], p[1]), p); }
+    V.draw();
+  });
+  canvas.addEventListener('pointermove', e => {
+    if (!V.ptrs.has(e.pointerId)) return;
+    V.ptrs.set(e.pointerId, pos(e));
+    if (V.pinch && V.ptrs.size >= 2) {
+      const [a, b] = [...V.ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]), m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2], P = V.pinch;
+      const s = Math.min(40, Math.max(0.02, P.s * d / P.d)), ix = (P.m[0] - P.tx) / P.s, iy = (P.m[1] - P.ty) / P.s;
+      V.s = s; V.tx = m[0] - ix * s; V.ty = m[1] - iy * s; V.draw();
+    } else if (!V.pinch) { const p = pos(e); tool.move && tool.move(V, V.toImg(p[0], p[1]), p); V.draw(); }
+  });
+  const up = e => {
+    if (!V.ptrs.has(e.pointerId)) return;
+    const p = pos(e); V.ptrs.delete(e.pointerId);
+    if (V.pinch) { if (V.ptrs.size === 0) V.pinch = null; return; }
+    tool.up && tool.up(V, V.toImg(p[0], p[1]), p); V.draw();
+  };
+  canvas.addEventListener('pointerup', up); canvas.addEventListener('pointercancel', up);
+  canvas.addEventListener('wheel', e => { e.preventDefault(); const p = pos(e); V.zoomAt(e.deltaY < 0 ? 1.15 : 1 / 1.15, p[0], p[1]); }, { passive: false });
+  canvas.closest('.stage').querySelectorAll('[data-zoom]').forEach(b => b.onclick = () => {
+    const f = +b.dataset.zoom; if (!f) { V.fit(); V.draw(); } else V.zoomAt(f, V.cw / 2, V.ch / 2);
+  });
+  return V;
+}
+window.addEventListener('resize', () => { if (S.view === 'rect') VR.resize(); if (S.view === 'crop') VC.resize(); if (S.view === 'mark') VM.resize(); });
+
+function handle(c, x, y, active) {
+  c.beginPath(); c.arc(x, y, active ? 13 : 11, 0, Math.PI * 2);
+  c.fillStyle = 'rgba(255,255,255,.92)'; c.fill(); c.lineWidth = 3; c.strokeStyle = '#f5b800'; c.stroke();
+}
+function loupe(V, ix, iy, sx, sy) {
+  const c = V.ctx, R = 58, z = Math.max(3, V.s * 3) / V.s, left = sx > V.cw / 2, cx = left ? R + 12 : V.cw - R - 12, cy = R + 12;
+  c.save(); c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2); c.clip();
+  c.fillStyle = '#000'; c.fillRect(cx - R, cy - R, 2 * R, 2 * R);
+  c.translate(cx, cy); c.scale(V.s * z, V.s * z); c.translate(-ix, -iy); c.drawImage(V.img, 0, 0); c.restore();
+  c.save(); c.strokeStyle = '#f5b800'; c.lineWidth = 2; c.beginPath(); c.arc(cx, cy, R, 0, Math.PI * 2); c.stroke();
+  c.beginPath(); c.moveTo(cx - 10, cy); c.lineTo(cx + 10, cy); c.moveTo(cx, cy - 10); c.lineTo(cx, cy + 10); c.stroke(); c.restore();
+}
+
+/* ---------------- step 1: straighten ---------------- */
+const rectTool = {
+  drag: -1,
+  down(V, p, sp) { let best = -1, bd = 34; S.quad.forEach((q, k) => { const [x, y] = V.toScr(q[0], q[1]); const d = Math.hypot(x - sp[0], y - sp[1]); if (d < bd) { bd = d; best = k; } }); this.drag = best; this.last = sp; },
+  move(V, p, sp) {
+    if (this.drag < 0) { V.tx += sp[0] - this.last[0]; V.ty += sp[1] - this.last[1]; this.last = sp; return; }
+    S.quad[this.drag] = [Math.max(0, Math.min(V.img.width, p[0])), Math.max(0, Math.min(V.img.height, p[1]))]; this.sp = sp;
+  },
+  up() { this.drag = -1; }, cancel() { this.drag = -1; },
+  draw(V) {
+    const c = V.ctx, pts = S.quad.map(q => V.toScr(q[0], q[1]));
+    c.save(); c.fillStyle = 'rgba(0,0,0,.45)'; c.beginPath(); c.rect(0, 0, V.cw, V.ch);
+    c.moveTo(...pts[0]); pts.slice(1).forEach(p => c.lineTo(...p)); c.closePath(); c.fill('evenodd');
+    c.strokeStyle = '#f5b800'; c.lineWidth = 2; c.beginPath(); c.moveTo(...pts[0]); pts.slice(1).forEach(p => c.lineTo(...p)); c.closePath(); c.stroke();
+    pts.forEach((p, k) => handle(c, p[0], p[1], k === this.drag)); c.restore();
+    if (this.drag >= 0) { const q = S.quad[this.drag]; loupe(V, q[0], q[1], ...pts[this.drag]); }
+  }
+};
+const VR = Viewport($('#cRect'), rectTool);
+
+function homography(src, dst) {   // maps dst -> src; 4 point pairs
+  const A = [], b = [];
+  for (let i = 0; i < 4; i++) {
+    const [x, y] = dst[i], [u, v] = src[i];
+    A.push([x, y, 1, 0, 0, 0, -u * x, -u * y]); b.push(u);
+    A.push([0, 0, 0, x, y, 1, -v * x, -v * y]); b.push(v);
+  }
+  for (let i = 0; i < 8; i++) {
+    let p = i; for (let r = i + 1; r < 8; r++) if (Math.abs(A[r][i]) > Math.abs(A[p][i])) p = r;
+    [A[i], A[p]] = [A[p], A[i]]; [b[i], b[p]] = [b[p], b[i]];
+    for (let r = 0; r < 8; r++) if (r !== i) { const f = A[r][i] / A[i][i]; for (let c = i; c < 8; c++) A[r][c] -= f * A[i][c]; b[r] -= f * b[i]; }
+  }
+  return b.map((v, i) => v / A[i][i]).concat(1);
+}
+function rectify(src, q) {
+  const d = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+  let W = (d(q[0], q[1]) + d(q[3], q[2])) / 2, H = (d(q[0], q[3]) + d(q[1], q[2])) / 2;
+  const k = Math.min(1, 1400 / Math.max(W, H)); W = Math.max(8, Math.round(W * k)); H = Math.max(8, Math.round(H * k));
+  const h = homography(q, [[0, 0], [W, 0], [W, H], [0, H]]);
+  const sd = src.getContext('2d').getImageData(0, 0, src.width, src.height), sw = src.width, sh = src.height, sp = sd.data;
+  const out = document.createElement('canvas'); out.width = W; out.height = H;
+  const oc = out.getContext('2d'), od = oc.createImageData(W, H), op = od.data;
+  for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+    const X = x + .5, Y = y + .5, w = h[6] * X + h[7] * Y + 1;
+    let u = (h[0] * X + h[1] * Y + h[2]) / w - .5, v = (h[3] * X + h[4] * Y + h[5]) / w - .5;
+    u = Math.max(0, Math.min(sw - 1.001, u)); v = Math.max(0, Math.min(sh - 1.001, v));
+    const x0 = u | 0, y0 = v | 0, fx = u - x0, fy = v - y0, i00 = (y0 * sw + x0) * 4, i10 = i00 + 4, i01 = i00 + sw * 4, i11 = i01 + 4, o = (y * W + x) * 4;
+    for (let c = 0; c < 3; c++) op[o + c] = (sp[i00 + c] * (1 - fx) + sp[i10 + c] * fx) * (1 - fy) + (sp[i01 + c] * (1 - fx) + sp[i11 + c] * fx) * fy;
+    op[o + 3] = 255;
+  }
+  oc.putImageData(od, 0, 0); return out;
+}
+$('#rectNext').onclick = () => { S.rect = rectify(S.src, S.quad); startCrop(); };
+$('#rectSkip').onclick = () => {
+  const c = document.createElement('canvas'); c.width = S.src.width; c.height = S.src.height; c.getContext('2d').drawImage(S.src, 0, 0); S.rect = c;
+  S.quad = [[0, 0], [c.width, 0], [c.width, c.height], [0, c.height]]; startCrop();
+};
+
+/* ---------------- step 2: crop ---------------- */
+const cropTool = {
+  drag: null,
+  down(V, p, sp) {
+    const c = S.crop, cs = [[c.x0, c.y0], [c.x1, c.y0], [c.x1, c.y1], [c.x0, c.y1]]; let best = null, bd = 34;
+    cs.forEach((q, k) => { const [x, y] = V.toScr(q[0], q[1]); const d = Math.hypot(x - sp[0], y - sp[1]); if (d < bd) { bd = d; best = k; } });
+    this.drag = best; this.last = sp;
+  },
+  move(V, p, sp) {
+    if (this.drag == null) { V.tx += sp[0] - this.last[0]; V.ty += sp[1] - this.last[1]; this.last = sp; return; }
+    const c = S.crop, x = Math.max(0, Math.min(V.img.width, p[0])), y = Math.max(0, Math.min(V.img.height, p[1]));
+    if (this.drag === 0 || this.drag === 3) c.x0 = Math.min(x, c.x1 - 4); else c.x1 = Math.max(x, c.x0 + 4);
+    if (this.drag <= 1) c.y0 = Math.min(y, c.y1 - 4); else c.y1 = Math.max(y, c.y0 + 4);
+  },
+  up() { this.drag = null; }, cancel() { this.drag = null; },
+  draw(V) {
+    const c = V.ctx, k = S.crop, [a, b] = [V.toScr(k.x0, k.y0), V.toScr(k.x1, k.y1)];
+    c.save(); c.fillStyle = 'rgba(0,0,0,.5)'; c.beginPath(); c.rect(0, 0, V.cw, V.ch); c.rect(a[0], a[1], b[0] - a[0], b[1] - a[1]); c.fill('evenodd');
+    c.strokeStyle = '#f5b800'; c.lineWidth = 2; c.strokeRect(a[0], a[1], b[0] - a[0], b[1] - a[1]);
+    [[a[0], a[1]], [b[0], a[1]], [b[0], b[1]], [a[0], b[1]]].forEach((p, i) => handle(c, p[0], p[1], i === this.drag)); c.restore();
+  }
+};
+const VC = Viewport($('#cCrop'), cropTool);
+function startCrop() { S.crop = { x0: 0, y0: 0, x1: S.rect.width, y1: S.rect.height }; VC.setImage(S.rect); show('crop'); }
+$('#cropBack').onclick = () => show('rect');
+$('#cropNext').onclick = () => {
+  const k = S.crop, w = Math.round(k.x1 - k.x0), h = Math.round(k.y1 - k.y0), c = document.createElement('canvas');
+  c.width = w; c.height = h; c.getContext('2d').drawImage(S.rect, k.x0, k.y0, w, h, 0, 0, w, h);
+  S.wall = c; S.shapes = []; S.undo = []; S.sel = -1; S.poly = null; VM.setImage(c); setTool('addRect'); show('mark'); computeWWR();
+};
+
+/* ---------------- step 3: mark glazing ---------------- */
+function shapePath(c, sh, V) {
+  c.beginPath();
+  if (sh.t === 'rect') { const [a, b] = [V.toScr(sh.x0, sh.y0), V.toScr(sh.x1, sh.y1)]; c.rect(a[0], a[1], b[0] - a[0], b[1] - a[1]); }
+  else { sh.pts.forEach((p, i) => { const q = V.toScr(p[0], p[1]); i ? c.lineTo(...q) : c.moveTo(...q); }); c.closePath(); }
+}
+function inShape(sh, x, y) {
+  if (sh.t === 'rect') return x >= Math.min(sh.x0, sh.x1) && x <= Math.max(sh.x0, sh.x1) && y >= Math.min(sh.y0, sh.y1) && y <= Math.max(sh.y0, sh.y1);
+  let inside = false; const p = sh.pts;
+  for (let i = 0, j = p.length - 1; i < p.length; j = i++) if ((p[i][1] > y) !== (p[j][1] > y) && x < (p[j][0] - p[i][0]) * (y - p[i][1]) / (p[j][1] - p[i][1]) + p[i][0]) inside = !inside;
+  return inside;
+}
+function pushUndo() { S.undo.push(JSON.stringify(S.shapes)); if (S.undo.length > 60) S.undo.shift(); }
+function norm(r) { return { ...r, x0: Math.min(r.x0, r.x1), x1: Math.max(r.x0, r.x1), y0: Math.min(r.y0, r.y1), y1: Math.max(r.y0, r.y1) }; }
+function clampPt(V, p) { return [Math.max(0, Math.min(V.img.width, p[0])), Math.max(0, Math.min(V.img.height, p[1]))]; }
+
+const markTool = {
+  down(V, p, sp) {
+    p = clampPt(V, p); this.start = p; this.sp0 = sp; this.moved = false; this.mode = null;
+    if (S.tool === 'addRect' || S.tool === 'subRect') { this.mode = 'rect'; this.tmp = { t: 'rect', m: S.tool === 'addRect' ? 'add' : 'sub', x0: p[0], y0: p[1], x1: p[0], y1: p[1] }; }
+    else if (S.tool === 'select') {
+      const sh = S.shapes[S.sel];
+      if (sh && sh.t === 'rect') {
+        const cs = [[sh.x0, sh.y0], [sh.x1, sh.y0], [sh.x1, sh.y1], [sh.x0, sh.y1]];
+        const k = cs.findIndex(q => { const s2 = V.toScr(q[0], q[1]); return Math.hypot(s2[0] - sp[0], s2[1] - sp[1]) < 26; });
+        if (k >= 0) { pushUndo(); this.mode = 'corner'; this.k = k; return; }
+      }
+      let hit = -1; for (let i = S.shapes.length - 1; i >= 0; i--) if (inShape(S.shapes[i], p[0], p[1])) { hit = i; break; }
+      S.sel = hit; syncMarkButtons();
+      if (hit >= 0) { pushUndo(); this.mode = 'move'; this.orig = JSON.parse(JSON.stringify(S.shapes[hit])); } else { this.mode = 'pan'; this.last = sp; }
+    } else { this.mode = 'polytap'; }
+  },
+  move(V, p, sp) {
+    if (Math.hypot(sp[0] - this.sp0[0], sp[1] - this.sp0[1]) > 6) this.moved = true;
+    const q = clampPt(V, p);
+    if (this.mode === 'rect') { this.tmp.x1 = q[0]; this.tmp.y1 = q[1]; this.hover = q; }
+    else if (this.mode === 'pan' || (this.mode === 'polytap' && this.moved)) { if (!this.last) this.last = this.sp0; V.tx += sp[0] - this.last[0]; V.ty += sp[1] - this.last[1]; this.last = sp; this.mode = 'pan'; }
+    else if (this.mode === 'move') {
+      const dx = p[0] - this.start[0], dy = p[1] - this.start[1], o = this.orig, sh = S.shapes[S.sel];
+      if (o.t === 'rect') Object.assign(sh, { x0: o.x0 + dx, x1: o.x1 + dx, y0: o.y0 + dy, y1: o.y1 + dy }); else sh.pts = o.pts.map(a => [a[0] + dx, a[1] + dy]);
+      computeWWRSoon();
+    } else if (this.mode === 'corner') {
+      const sh = S.shapes[S.sel], k = this.k;
+      if (k === 0 || k === 3) sh.x0 = q[0]; else sh.x1 = q[0];
+      if (k <= 1) sh.y0 = q[1]; else sh.y1 = q[1];
+      this.hover = q; computeWWRSoon();
+    }
+  },
+  up(V, p, sp) {
+    const q = clampPt(V, p);
+    if (this.mode === 'rect') {
+      const r = norm(this.tmp); this.tmp = null;
+      if ((r.x1 - r.x0) * V.s > 6 && (r.y1 - r.y0) * V.s > 6) { pushUndo(); S.shapes.push(r); computeWWR(); }
+    } else if (this.mode === 'polytap' && !this.moved) {
+      if (!S.poly) S.poly = { t: 'poly', m: S.tool === 'addPoly' ? 'add' : 'sub', pts: [] };
+      const f = S.poly.pts[0];
+      if (f && S.poly.pts.length >= 3) { const fs = V.toScr(f[0], f[1]); if (Math.hypot(fs[0] - sp[0], fs[1] - sp[1]) < 22) { closePoly(); return; } }
+      S.poly.pts.push(q); syncMarkButtons();
+    } else if (this.mode === 'corner') { S.shapes[S.sel] = norm(S.shapes[S.sel]); computeWWR(); }
+    else if (this.mode === 'move') computeWWR();
+    this.mode = null; this.last = null; this.hover = null;
+  },
+  cancel() { this.tmp = null; this.mode = null; this.last = null; },
+  draw(V) {
+    const c = V.ctx;
+    const all = this.tmp ? [...S.shapes, this.tmp] : S.shapes;
+    all.forEach((sh, i) => {
+      shapePath(c, sh, V);
+      c.fillStyle = sh.m === 'add' ? cssVar('--glass') : cssVar('--cut'); c.fill();
+      c.lineWidth = i === S.sel ? 3 : 1.6; c.strokeStyle = sh.m === 'add' ? cssVar('--glass-line') : cssVar('--cut-line');
+      c.setLineDash(sh.m === 'sub' ? [6, 4] : []); c.stroke(); c.setLineDash([]);
+    });
+    const sh = S.shapes[S.sel];
+    if (S.tool === 'select' && sh) {
+      if (sh.t === 'rect') [[sh.x0, sh.y0], [sh.x1, sh.y0], [sh.x1, sh.y1], [sh.x0, sh.y1]].forEach(p => { const s2 = V.toScr(p[0], p[1]); handle(c, s2[0], s2[1], false); });
+    }
+    if (S.poly && S.poly.pts.length) {
+      c.beginPath(); S.poly.pts.forEach((p, i) => { const s2 = V.toScr(p[0], p[1]); i ? c.lineTo(...s2) : c.moveTo(...s2); });
+      c.strokeStyle = S.poly.m === 'add' ? cssVar('--glass-line') : cssVar('--cut-line'); c.lineWidth = 2; c.stroke();
+      S.poly.pts.forEach((p, i) => { const s2 = V.toScr(p[0], p[1]); c.beginPath(); c.arc(s2[0], s2[1], i === 0 ? 9 : 5, 0, Math.PI * 2); c.fillStyle = '#fff'; c.fill(); c.strokeStyle = '#f5b800'; c.lineWidth = 2; c.stroke(); });
+    }
+    if (this.hover) loupe(V, this.hover[0], this.hover[1], ...V.toScr(this.hover[0], this.hover[1]));
+  }
+};
+const VM = Viewport($('#cMark'), markTool);
+function closePoly() {
+  if (S.poly && S.poly.pts.length >= 3) { pushUndo(); S.shapes.push(S.poly); }
+  S.poly = null; syncMarkButtons(); computeWWR(); VM.draw();
+}
+function setTool(t) {
+  if (S.poly) closePoly();
+  S.tool = t; if (t !== 'select') S.sel = -1;
+  document.querySelectorAll('[data-tool]').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.tool === t)));
+  const hints = { addRect: 'Drag a box over each window. Drag with two fingers to move around.', addPoly: 'Tap the corners of a non-rectangular window, then tap the first point or Close shape.',
+    subRect: 'Drag a box over frames, spandrel panels or anything that is not see-through glass.', subPoly: 'Tap corners of an area to cut out, then tap the first point or Close shape.',
+    select: 'Tap a shape to select it. Drag to move, drag its corners to resize, or duplicate it for repeated windows.' };
+  $('#markHint').textContent = hints[t]; syncMarkButtons(); VM.draw();
+}
+document.querySelectorAll('[data-tool]').forEach(b => b.onclick = () => setTool(b.dataset.tool));
+function syncMarkButtons() {
+  const sel = S.tool === 'select' && S.sel >= 0;
+  $('#mDup').hidden = !sel; $('#mDel').hidden = !sel;
+  $('#mClose').hidden = !(S.poly && S.poly.pts.length >= 3);
+}
+$('#mClose').onclick = closePoly;
+$('#mUndo').onclick = () => { if (S.poly && S.poly.pts.length) { S.poly.pts.pop(); if (!S.poly.pts.length) S.poly = null; } else if (S.undo.length) { S.shapes = JSON.parse(S.undo.pop()); S.sel = -1; } syncMarkButtons(); computeWWR(); VM.draw(); };
+$('#mDel').onclick = () => { if (S.sel < 0) return; pushUndo(); S.shapes.splice(S.sel, 1); S.sel = -1; syncMarkButtons(); computeWWR(); VM.draw(); };
+$('#mDup').onclick = () => {
+  const sh = S.shapes[S.sel]; if (!sh) return; pushUndo();
+  const off = sh.t === 'rect' ? (sh.x1 - sh.x0) * 1.15 : 30, n = JSON.parse(JSON.stringify(sh));
+  if (n.t === 'rect') { n.x0 += off; n.x1 += off; } else n.pts = n.pts.map(p => [p[0] + off, p[1]]);
+  S.shapes.push(n); S.sel = S.shapes.length - 1; computeWWR(); VM.draw();
+};
+
+let wwrTimer = null;
+function computeWWRSoon() { clearTimeout(wwrTimer); wwrTimer = setTimeout(computeWWR, 60); }
+function computeWWR() {
+  if (!S.wall) return 0;
+  const k = Math.min(1, 900 / Math.max(S.wall.width, S.wall.height)), W = Math.max(1, Math.round(S.wall.width * k)), H = Math.max(1, Math.round(S.wall.height * k));
+  const c = document.createElement('canvas'); c.width = W; c.height = H; const x = c.getContext('2d');
+  const V = { toScr: (a, b) => [a * k, b * k] };
+  S.shapes.forEach(sh => { x.globalCompositeOperation = sh.m === 'add' ? 'source-over' : 'destination-out'; shapePath(x, sh, V); x.fillStyle = '#000'; x.fill(); });
+  const d = x.getImageData(0, 0, W, H).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 127) n++;
+  S.wwr = n / (W * H);
+  $('#readout').innerHTML = '<small>WWR</small>' + (100 * S.wwr).toFixed(1) + '%';
+  return S.wwr;
+}
+
+$('#mNext').onclick = () => {
+  if (S.poly) closePoly();
+  computeWWR();
+  const k = Math.min(1, 1200 / Math.max(S.wall.width, S.wall.height)), c = document.createElement('canvas');
+  c.width = Math.round(S.wall.width * k); c.height = Math.round(S.wall.height * k);
+  const x = c.getContext('2d'); x.drawImage(S.wall, 0, 0, c.width, c.height);
+  const V = { toScr: (a, b) => [a * k, b * k] };
+  S.shapes.forEach(sh => { shapePath(x, sh, V); x.fillStyle = sh.m === 'add' ? 'rgba(0,156,222,.38)' : 'rgba(214,48,49,.32)'; x.fill(); x.lineWidth = 2; x.strokeStyle = sh.m === 'add' ? '#0092d4' : '#d63031'; x.stroke(); });
+  c.toBlob(b => { S.blob = b; openSave('photo'); }, 'image/jpeg', .82);
+};
+
+/* ---------------- photos kept with each measurement ---------------- */
+/* Geometry lets anyone redo a measurement: the four corners on the original photo, the crop on the straightened image, and every glazing shape. */
+function geomOf() {
+  const r1 = v => Math.round(v * 10) / 10;
+  return { src: [S.src.width, S.src.height], quad: S.quad.map(p => p.map(r1)), rect: [S.rect.width, S.rect.height],
+    crop: [r1(S.crop.x0), r1(S.crop.y0), r1(S.crop.x1), r1(S.crop.y1)],
+    shapes: S.shapes.map(sh => sh.t === 'rect' ? { t: 'rect', m: sh.m, r: [r1(sh.x0), r1(sh.y0), r1(sh.x1), r1(sh.y1)] } : { t: 'poly', m: sh.m, p: sh.pts.map(p => p.map(r1)) }) };
+}
+function toJpeg(canvas, q) {
+  const k = Math.min(1, 2000 / Math.max(canvas.width, canvas.height));
+  let c = canvas;
+  if (k < 1) { c = document.createElement('canvas'); c.width = Math.round(canvas.width * k); c.height = Math.round(canvas.height * k); c.getContext('2d').drawImage(canvas, 0, 0, c.width, c.height); }
+  return new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej(new Error('encode')), 'image/jpeg', q));
+}
+/* On-phone photo store (IndexedDB), used by the standalone page and whenever an upload fails. */
+let idbP = null;
+function idb() {
+  if (!idbP) idbP = new Promise((res, rej) => {
+    try {
+      const r = indexedDB.open('wwr-photos', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('p');
+      r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error);
+    } catch (e) { rej(e); }
+  });
+  return idbP;
+}
+async function idbDo(mode, fn) {
+  const d = await idb();
+  return new Promise((res, rej) => { const t = d.transaction('p', mode); const out = fn(t.objectStore('p')); t.oncomplete = () => res(out && out.result); t.onerror = () => rej(t.error); });
+}
+function photoPut(mid, marked, orig) {
+  try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch (e) {}
+  return idbDo('readwrite', s => { s.put(marked, mid + '_m'); s.put(orig, mid + '_o'); });
+}
+function photoGet(mid, kind) { return idbDo('readonly', s => s.get(mid + '_' + kind)).catch(() => null); }
+/* A URL for a measurement's photo, wherever it is kept. kind: 'm' marked, 'o' original. */
+async function photoUrl(m, kind) {
+  const id = kind === 'm' ? m.img : m.orig;
+  if (id) return '/_blob/' + id;
+  if (m.localPhotos) { const b = await photoGet(m.mid, kind); if (b) return URL.createObjectURL(b); }
+  return null;
+}
+async function photoBlob(m, kind) {
+  const id = kind === 'm' ? m.img : m.orig;
+  if (id) { try { const r = await fetch('/_blob/' + id); if (r.ok) return await r.blob(); } catch (e) {} }
+  if (m.localPhotos) return await photoGet(m.mid, kind);
+  return null;
+}
+async function viewPhotos(m) {
+  const d = document.createElement('div'); d.className = 'stack'; d.style.paddingBottom = '0';
+  for (const [kind, cap] of [['m', 'Straightened, glazing marked'], ['o', 'Original photo']]) {
+    const u = await photoUrl(m, kind); if (!u) continue;
+    const f = document.createElement('figure'); f.style.margin = '0';
+    const i = document.createElement('img'); i.src = u; i.alt = cap; i.className = 'preview';
+    const c = document.createElement('figcaption'); c.className = 'hint'; c.textContent = cap; f.append(i, c); d.appendChild(f);
+  }
+  if (!d.children.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'No photos are stored for this measurement.'; d.appendChild(p); }
+  const acts = [mkBtn('Close', 'primary', closeModal)];
+  if (S.downloads || STANDALONE) acts.unshift(mkBtn('Save photos', '', async () => {
+    for (const kind of ['m', 'o']) { const b = await photoBlob(m, kind); if (b) { try { await saveFile(m.label + (kind === 'm' ? '_marked' : '_original') + '.jpg', b); } catch (e) {} } }
+  }));
+  openModal(m.label + ' · ' + (100 * m.wwr).toFixed(1) + '%', d, acts);
+}
+
+/* ---------------- step 4: save ---------------- */
+function nextLabel() {
+  const { id, side } = S.cur;
+  const all = Object.values(((((S.recs[id] || {}).sides || {})[side]) || {}).items || {});
+  const n = all.reduce((a, m) => Math.max(a, +((m.label || '').split('_').pop()) || 0), 0) + 1;
+  return id + '_' + side + '_' + n;
+}
+function segInit(host, val) {
+  host.querySelectorAll('button').forEach(b => { b.setAttribute('aria-pressed', String(b.dataset.v === val)); b.onclick = () => host.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); });
+}
+function segVal(host) { const b = host.querySelector('[aria-pressed="true"]'); return b ? b.dataset.v : ''; }
+function openSave(method) {
+  S.method = method; S.label = nextLabel();
+  document.querySelectorAll('.ctx').forEach(e => e.textContent = ctxLabel());
+  const img = $('#svImg');
+  if (method === 'photo') { img.hidden = false; if (S.imgUrl) URL.revokeObjectURL(S.imgUrl); S.imgUrl = URL.createObjectURL(S.blob); img.src = S.imgUrl; $('#svVal').textContent = (100 * S.wwr).toFixed(1) + '%'; }
+  else { img.hidden = true; $('#svVal').textContent = ''; }
+  $('#svEyeRow').hidden = method !== 'eye'; $('#svEye').value = '';
+  $('#svName').textContent = S.label;
+  segInit($('#svSource'), method === 'photo' ? 'site photo' : 'google earth');
+  segInit($('#svConf'), method === 'photo' ? 'medium' : 'low');
+  $('#svNote').value = '';
+  $('#svDownload').hidden = !(method === 'photo' && (S.downloads || STANDALONE));
+  show('save');
+}
+$('#btnEye').onclick = () => { S.blob = null; openSave('eye'); setTimeout(() => $('#svEye').focus(), 50); };
+$('#saveBack').onclick = () => { if (S.method === 'photo') show('mark'); else openSide(S.cur.id, S.cur.side); };
+/* Save a file to the device: through Claude when inside it, as a normal browser download on the standalone page. */
+async function saveFile(name, blob) {
+  if (S.downloads) { await S.downloads.save({ filename: name, data: blob }); return true; }
+  if (STANDALONE) {
+    const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); return true;
+  }
+  return false;
+}
+$('#svDownload').onclick = async () => {
+  try { await saveFile(S.label + '.jpg', S.blob); } catch (e) { if (e && e.code !== 'declined') toast('Could not save the image'); }
+};
+$('#svSave').onclick = async () => {
+  const btn = $('#svSave');
+  let wwr = S.wwr;
+  if (S.method === 'eye') {
+    const v = parseFloat($('#svEye').value);
+    if (!(v >= 0 && v <= 100)) { toast('Enter a WWR between 0 and 100'); $('#svEye').focus(); return; }
+    wwr = v / 100;
+  }
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const { id, side } = S.cur;
+  const item = { mid: Date.now().toString(36) + Math.random().toString(36).slice(2, 6), label: S.label, wwr: Math.round(wwr * 10000) / 10000, method: S.method,
+    source: segVal($('#svSource')), conf: segVal($('#svConf')), note: $('#svNote').value.trim(), at: new Date().toISOString(), by: S.uid || null,
+    shapes: S.method === 'photo' ? S.shapes.length : 0 };
+  if (S.surveyor) item.surveyor = S.surveyor;
+  if (S.method === 'photo') item.geom = geomOf();
+  try {
+    if (S.method === 'photo' && S.blob) {
+      btn.textContent = 'Saving photos…';
+      const orig = await toJpeg(S.src, .85);
+      if (S.assets && !S.local) {
+        let failed = '';
+        try { item.img = (await S.assets.upload(S.blob, { type: 'image/jpeg' })).id; } catch (e) { failed = e.code || 'error'; }
+        try { item.orig = (await S.assets.upload(orig, { type: 'image/jpeg' })).id; } catch (e) { failed = failed || e.code || 'error'; }
+        if (failed) {   // keep the photos on this phone instead, so nothing is lost
+          await photoPut(item.mid, S.blob, orig).catch(() => {}); item.localPhotos = true;
+          toast('Photos not uploaded (' + failed + '); kept on this phone. The WWR is saved.');
+        }
+      } else {
+        try { await photoPut(item.mid, S.blob, orig); item.localPhotos = true; }
+        catch (e) { toast('Could not keep the photos on this phone. Use Save image to device.'); }
+      }
+    }
+    const patch = { sides: { [side]: { items: { [item.mid]: item } } } };
+    if (!claimOf(id) && S.uid && !S.local) patch.claim = { by: S.uid, at: item.at };   // first surveyor to save claims the building
+    const res = await patchBuilding(id, patch);
+    toast(res === 'queued' ? 'No connection: ' + S.label + ' will upload when you are back online' : 'Saved ' + S.label + ': ' + (100 * item.wwr).toFixed(1) + '%');
+    openSide(id, side);
+  } catch (e) {
+    toast(e && e.code === 'quota_exceeded' ? 'The store is full. Export, then delete old measurements.' : 'Could not save: ' + ((e && (e.code || e.message)) || 'unknown error'));
+  } finally { btn.disabled = false; btn.textContent = 'Save'; }
+};
+
+/* ---------------- export ---------------- */
+const csvCell = v => { const s = v == null ? '' : String(v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; };
+function buildCsv() {
+  const head = ['bldg_id', 'bldg_name', 'zone_id', 'WWR_N', 'WWR_E', 'WWR_S', 'WWR_W', 'n_N', 'n_E', 'n_S', 'n_W', 'conf_N', 'conf_E', 'conf_S', 'conf_W', 'gis_wwr'];
+  const rows = [head.join(',')];
+  BUILDINGS.slice().sort((a, b) => a.i.localeCompare(b.i)).forEach(b => {
+    const v = SIDES.map(s => { const x = sideValue(b.i, s); return x == null ? '' : x.toFixed(4); });
+    const n = SIDES.map(s => sideItems(b.i, s).length);
+    const cf = SIDES.map(s => { const it = sideItems(b.i, s); const r = { high: 3, medium: 2, low: 1 }; return it.length ? it.map(x => x.conf).sort((a, c) => (r[c] || 0) - (r[a] || 0))[0] : ''; });
+    rows.push([b.i, b.n, b.z, ...v, ...n, ...cf, (b.w / 100).toFixed(4)].map(csvCell).join(','));
+  });
+  return rows.join('\n') + '\n';
+}
+function buildDetailCsv() {
+  const head = ['label', 'bldg_id', 'bldg_name', 'zone_id', 'side', 'wwr', 'method', 'source', 'confidence', 'note', 'date', 'surveyor', 'image_id', 'measurement_id', 'saved_at'];
+  const rows = [head.join(',')];
+  const sv = m => m.surveyor || (m.by ? (m.by === S.uid ? (S.myName || 'me') : (S.names[m.by] || m.by)) : '');
+  BUILDINGS.forEach(b => SIDES.forEach(s => sideItems(b.i, s).forEach(m => rows.push([m.label, b.i, b.n, b.z, s, m.wwr, m.method, m.source, m.conf, m.note, (m.at || '').slice(0, 10), sv(m), m.img || '', m.mid, m.at || ''].map(csvCell).join(',')))));
+  return rows.join('\n') + '\n';
+}
+
+/* ---------------- ZIP bundles: log + photos ---------------- */
+let zipP = null;
+function loadZip() {
+  if (window.JSZip) return Promise.resolve(window.JSZip);
+  if (!zipP) zipP = new Promise((res, rej) => {
+    const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    s.onload = () => res(window.JSZip); s.onerror = () => { zipP = null; rej(new Error('Could not load the ZIP tool. Check the connection.')); };
+    document.head.appendChild(s);
+  });
+  return zipP;
+}
+const fileSafe = s => String(s || '').replace(/[^A-Za-z0-9_.-]+/g, '-');
+function allItems() { const out = []; BUILDINGS.forEach(b => SIDES.forEach(s => sideItems(b.i, s).forEach(m => out.push({ b, s, m })))); return out; }
+/* One file for everything: measurements.csv, measurements.json (with geometry) and photos/<bldg>/<label>_marked|_original.jpg */
+async function buildBundle(progress) {
+  const JSZip = await loadZip(), zip = new JSZip(), items = allItems(), json = [];
+  let n = 0, photos = 0;
+  for (const { b, s, m } of items) {
+    const rec = Object.assign({ bldg_id: b.i, bldg_name: b.n, side: s }, m); delete rec.img; delete rec.orig; delete rec.localPhotos;
+    for (const kind of ['m', 'o']) {
+      const blob = (m.img || m.orig || m.localPhotos) ? await photoBlob(m, kind) : null;
+      if (blob) { const p = 'photos/' + b.i + '/' + fileSafe(m.label) + '_' + fileSafe(m.mid) + (kind === 'm' ? '_marked' : '_original') + '.jpg'; zip.file(p, blob); rec[kind === 'm' ? 'photo_marked' : 'photo_original'] = p; photos++; }
+    }
+    json.push(rec); progress && progress(++n, items.length);
+  }
+  zip.file('measurements.csv', buildDetailCsv());
+  zip.file('measurements.json', JSON.stringify({ app: 'phase2-wwr-survey', version: 1, surveyor: S.surveyor || S.myName || '', exported: new Date().toISOString(), items: json }, null, 1));
+  const blob = await zip.generateAsync({ type: 'blob', compression: 'STORE' });
+  return { blob, count: items.length, photos };
+}
+async function exportBundle() {
+  closeModal();
+  try {
+    const { blob, count, photos } = await buildBundle((i, n) => toast('Packing ' + i + ' / ' + n + '…'));
+    const tag = S.surveyor ? '_' + fileSafe(S.surveyor) : '';
+    await saveFile('wwr_survey' + tag + '_' + new Date().toISOString().slice(0, 10) + '.zip', blob);
+    toast('Packed ' + count + ' measurements and ' + photos + ' photos');
+  } catch (e) { if (!e || e.code !== 'declined') toast((e && e.message) || 'Could not build the ZIP'); }
+}
+async function importBundle(file) {
+  let data, zip;
+  try { const JSZip = await loadZip(); zip = await JSZip.loadAsync(file); data = JSON.parse(await zip.file('measurements.json').async('string')); }
+  catch (e) { toast('That ZIP is not an export from this app'); return; }
+  const items = data.items || [], patches = {}; let added = 0, photosUp = 0, skipped = 0, bad = 0, k = 0;
+  for (const r of items) {
+    toast('Importing ' + (++k) + ' / ' + items.length + '…');
+    const b = byId[r.bldg_id], s = r.side;
+    if (!b || !SIDES.includes(s) || typeof r.wwr !== 'number' || !r.mid) { bad++; continue; }
+    const cur = ((((S.recs[b.i] || {}).sides || {})[s] || {}).items || {})[r.mid];
+    if (cur && (cur.img || !r.photo_marked)) { skipped++; continue; }
+    const item = Object.assign({}, r); ['bldg_id', 'bldg_name', 'side', 'photo_marked', 'photo_original'].forEach(f => delete item[f]);
+    item.by = null; item.surveyor = r.surveyor || data.surveyor || 'imported'; item.imported = new Date().toISOString();
+    for (const [f, key] of [['photo_marked', 'img'], ['photo_original', 'orig']]) {
+      const zf = r[f] && zip.file(r[f]);
+      if (zf && S.assets) { try { item[key] = (await S.assets.upload(await zf.async('blob'), { type: 'image/jpeg' })).id; photosUp++; } catch (e) {} }
+    }
+    patches[b.i] = deepMerge(patches[b.i] || {}, { sides: { [s]: { items: { [item.mid]: item } } } }); added++;
+  }
+  if (!added) { toast('Nothing new: ' + skipped + ' already imported' + (bad ? ', ' + bad + ' unreadable' : '')); return; }
+  let failed = 0;
+  for (const id of Object.keys(patches)) { try { await patchBuilding(id, patches[id]); } catch (e) { failed++; } }
+  toast('Imported ' + added + ' measurements with ' + photosUp + ' photos' + (skipped ? ', ' + skipped + ' already there' : '') + (bad ? ', ' + bad + ' unreadable' : '') + (failed ? ', ' + failed + ' buildings failed' : ''));
+}
+
+/* ---------------- import a surveyor's log (from the standalone page) ---------------- */
+function parseCsv(text) {
+  const rows = []; let row = [], f = '', q = false;
+  text = text.replace(/^﻿/, '');
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    if (q) { if (c === '"') { if (text[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; }
+    else if (c === '"') q = true;
+    else if (c === ',') { row.push(f); f = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; }
+    else f += c;
+  }
+  if (f !== '' || row.length) { row.push(f); rows.push(row); }
+  const head = rows.shift() || [];
+  return rows.filter(r => r.length > 1).map(r => Object.fromEntries(head.map((h, k) => [h.trim(), (r[k] || '').trim()])));
+}
+async function importLog(file) {
+  let rows;
+  try { rows = parseCsv(await file.text()); } catch (e) { toast('Could not read that file'); return; }
+  if (!rows.length || !('measurement_id' in rows[0]) || !('wwr' in rows[0])) { toast('That is not a measurement log from this app'); return; }
+  const patches = {}; let added = 0, skipped = 0, bad = 0;
+  rows.forEach(r => {
+    const b = byId[r.bldg_id], s = r.side, w = parseFloat(r.wwr);
+    if (!b || !SIDES.includes(s) || !(w >= 0 && w <= 1) || !r.measurement_id) { bad++; return; }
+    const exists = ((((S.recs[b.i] || {}).sides || {})[s] || {}).items || {})[r.measurement_id];
+    if (exists) { skipped++; return; }
+    const item = { mid: r.measurement_id, label: r.label, wwr: w, method: r.method || 'photo', source: r.source, conf: r.confidence, note: r.note,
+      at: r.saved_at || r.date, by: null, surveyor: r.surveyor || 'imported', imported: new Date().toISOString() };
+    patches[b.i] = deepMerge(patches[b.i] || {}, { sides: { [s]: { items: { [item.mid]: item } } } }); added++;
+  });
+  const ids = Object.keys(patches);
+  if (!ids.length) { toast('Nothing new: ' + skipped + ' already imported' + (bad ? ', ' + bad + ' rows unreadable' : '')); return; }
+  let failed = 0;
+  for (const id of ids) { try { await patchBuilding(id, patches[id]); } catch (e) { failed++; } }
+  toast('Imported ' + added + ' measurements' + (skipped ? ', skipped ' + skipped + ' already there' : '') + (bad ? ', ' + bad + ' unreadable' : '') + (failed ? ', ' + failed + ' buildings failed' : ''));
+}
+$('#btnExport').onclick = () => {
+  const body = document.createElement('div'); body.className = 'stack'; body.style.paddingBottom = '0';
+  const p = document.createElement('p'); p.className = 'hint'; p.style.margin = '0';
+  p.textContent = STANDALONE
+    ? 'Log + photos (ZIP): every measurement saved on this phone with its original and marked-up photos. Send this file to the survey lead, who imports it into the team’s survey.'
+    : 'Building table: one row per building with WWR_N/E/S/W as fractions (average of each side’s measurements), ready to join to the GIS on bldg_id. Measurement log: every measurement with source, confidence, surveyor and notes. Log + photos: the log plus every original and marked-up photo, in one ZIP.';
+  body.appendChild(p);
+  if (!STANDALONE && !S.local && S.admin) {
+    const l = document.createElement('label'); l.className = 'btn'; l.htmlFor = 'importFile'; l.textContent = 'Import a surveyor’s file (.zip or .csv)';
+    const inp = document.createElement('input'); inp.type = 'file'; inp.id = 'importFile'; inp.accept = '.zip,.csv,application/zip,text/csv'; inp.hidden = true;
+    inp.onchange = () => { const f = inp.files[0]; if (f) { closeModal(); /\.zip$/i.test(f.name) ? importBundle(f) : importLog(f); } };
+    body.append(l, inp);
+  }
+  if (S.downloads || STANDALONE) body.appendChild(mkBtn('Log + photos (ZIP)', STANDALONE ? 'primary' : '', exportBundle));
+  if (STANDALONE) {
+    const ch = mkBtn('Change surveyor name' + (S.surveyor ? ' (' + S.surveyor + ')' : ''), '', () => { closeModal(); askName(); });
+    body.appendChild(ch);
+  }
+  const acts = [];
+  const doExport = async (name, text) => {
+    try { if (await saveFile(name, new Blob([text], { type: 'text/csv' }))) { closeModal(); return; } }
+    catch (e) { if (e && e.code === 'declined') return; }
+    const ta = document.createElement('textarea'); ta.readOnly = true; ta.value = text; ta.setAttribute('aria-label', name);
+    $('#mdBody').innerHTML = ''; $('#mdBody').appendChild(ta); ta.select();
+    $('#mdTitle').textContent = name + ': copy the text below';
+    const cp = mkBtn('Copy', 'primary', async () => { try { await navigator.clipboard.writeText(text); toast('Copied'); } catch (e) { ta.select(); toast('Select all and copy'); } });
+    setActions([mkBtn('Close', '', closeModal), cp]);
+  };
+  const tag = STANDALONE && S.surveyor ? '_' + S.surveyor.replace(/[^A-Za-z0-9]+/g, '-') : '';
+  const day = new Date().toISOString().slice(0, 10);
+  acts.push(mkBtn(STANDALONE ? 'Log only (CSV)' : 'Measurement log', '', () => doExport('wwr_measurements' + tag + '_' + day + '.csv', buildDetailCsv())));
+  if (!STANDALONE) acts.push(mkBtn('Building table', 'primary', () => doExport('wwr_by_building.csv', buildCsv())));
+  openModal('Export CSV', body, [mkBtn('Cancel', '', closeModal), ...acts]);
+};
+
+/* ---------------- survey guide ---------------- */
+const GUIDE = [
+  ['What to measure', ['WWR = see-through glass ÷ gross wall area of that side (floor-to-floor height × facade length).',
+    'Measure the typical upper floors. If the ground floor is very different (void deck, shopfront), say so in Notes.']],
+  ['Counts as wall, not glass', ['Spandrel or opaque glass panels in front of floor slabs, and window frames and mullions (cut them out with Remove).',
+    'Open corridors, void decks and louvred openings: wall. Mention them in Notes.']],
+  ['Which side is which', ['Sides follow the coloured plan on each side page, not a compass. On diagonal buildings, always go by the plan.',
+    'For the N side, stand north of the building and face south.']],
+  ['Photos', ['Shoot one typical bay as square-on as you can; trees and steep angles matter less for one bay.',
+    'Straighten on the bay edges, crop to one full bay (slab edge to slab edge), then mark every window inside it.']],
+  ['Working as a team', ['Claim a building before you start, so others skip it. Your first save claims it automatically.',
+    'Release it if you can’t finish. A second measurement of the same side is welcome; large disagreements are flagged under To check.',
+    'If you have no signal, keep saving: values upload when you are back online. Keep the page open until the waiting count clears.',
+    'Without a Claude account: use the standalone page, then Export \u2192 Log + photos and send the ZIP to the survey lead.']],
+  ['Confidence', ['High: from drawings or a careful square-on photo. Medium: a traced photo at an angle or partly hidden. Low: an estimate by eye.']],
+];
+$('#btnGuide').onclick = () => {
+  const d = document.createElement('div'); d.className = 'guide';
+  GUIDE.forEach(([h, ps]) => { const h3 = document.createElement('h3'); h3.textContent = h; const ul = document.createElement('ul'); ps.forEach(t => { const li = document.createElement('li'); li.textContent = t; ul.appendChild(li); }); d.append(h3, ul); });
+  openModal('Survey guide', d, [mkBtn('Close', 'primary', closeModal)]);
+};
+
+/* ---------------- small UI helpers ---------------- */
+function mkBtn(t, cls, fn) { const b = document.createElement('button'); b.type = 'button'; b.className = 'btn ' + cls; b.textContent = t; b.onclick = fn; return b; }
+function setActions(list) { const a = $('#mdActions'); a.innerHTML = ''; list.forEach(b => a.appendChild(b)); }
+function openModal(title, bodyEl, actions) { $('#mdTitle').textContent = title; const mb = $('#mdBody'); mb.innerHTML = ''; if (bodyEl) mb.appendChild(bodyEl); setActions(actions); $('#modal').hidden = false; }
+function closeModal() { $('#modal').hidden = true; }
+$('#modal').addEventListener('click', e => { if (e.target.id === 'modal') closeModal(); });
+function confirmBox(title, text, okLabel, fn) {
+  const p = document.createElement('p'); p.style.margin = '0'; p.className = 'hint'; p.textContent = text;
+  openModal(title, p, [mkBtn('Cancel', '', closeModal), mkBtn(okLabel, 'primary', () => { closeModal(); fn(); })]);
+}
+let toastT = null;
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { t.hidden = true; }, 2600); }
+
+renderZoneChips();
+init();
+</script>
+
+</body></html>
